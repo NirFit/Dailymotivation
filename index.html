@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>משפטי מוטיבציה יומיים</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .quote-container {
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="music-controls">
+        <button id="toggleMusic"><i class="fas fa-volume-up"></i></button>
+    </div>
+    <div class="container">
+        <h1 class="main-title">מוטיבציה יומית</h1>
+        
+        <div class="datetime-box">
+            <div id="current-date"></div>
+            <div id="current-time"></div>
+        </div>
+
+        <div class="quote-container">
+            <div class="quote-box">
+                <div class="quote hebrew"></div>
+            </div>
+        </div>
+        
+        <div class="share-buttons">
+            <button onclick="shareQuote('whatsapp')" class="share-btn whatsapp" title="שתף בוואטסאפ">
+                <i class="fab fa-whatsapp"></i>
+            </button>
+            <button onclick="shareQuote('telegram')" class="share-btn telegram" title="שתף בטלגרם">
+                <i class="fab fa-telegram"></i>
+            </button>
+            <button onclick="shareQuote('facebook')" class="share-btn facebook" title="שתף בפייסבוק">
+                <i class="fab fa-facebook-f"></i>
+            </button>
+            <button onclick="shareQuote('instagram')" class="share-btn instagram" title="שתף באינסטגרם">
+                <i class="fab fa-instagram"></i>
+            </button>
+            <button onclick="copyQuote()" class="share-btn copy" title="העתק">
+                <i class="fas fa-copy"></i>
+            </button>
+        </div>
+        
+        <button id="newQuote" disabled>
+            <span>משפט הבא בעוד</span>
+            <span id="timeUntilNextDay"></span>
+        </button>
+        <p class="subtitle">בכל יום, מוטיבציה חדשה עם משפט חדש.</p>
+    </div>
+    <footer class="credit">נבנה על ידי ניר חמו &copy; 2024</footer>
+    <audio id="backgroundMusic" loop autoplay>
+        <source src="https://www.chosic.com/wp-content/uploads/2021/07/purrple-cat-green-tea.mp3" type="audio/mpeg">
+    </audio>
+    <script src="script.js"></script>
+</body>
+</html> 
