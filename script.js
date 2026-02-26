@@ -12,7 +12,7 @@ const quotes = [
     "אתה לא נכשל עד שאתה מפסיק לנסות!",
     "תאמין שאתה יכול, וכבר עשית חצי מהדרך.",
     "החיים הם 10% מה שקורה לך, ו-90% איך אתה מגיב לזה.",
-    "אין דבר בלתי ��פשרי למי שמנסה!",
+    "אין דבר בלתי אפשרי למי שמנסה!",
     "כל הצלחה מתחילה בהחלטה לנסות.",
     "אל תפחד מהשינוי, אתה עלול לאבד משהו טוב, אבל אתה עשוי לזכות במשהו טוב יותר!",
     "תחלום בגדול, תתחיל בקטן!",
@@ -63,36 +63,12 @@ const quotes = [
 ];
 
 const hebrewQuote = document.querySelector('.hebrew');
-const englishQuote = document.querySelector('.english');
-const newQuoteButton = document.getElementById('newQuote');
 const music = document.getElementById('backgroundMusic');
 const musicToggle = document.getElementById('toggleMusic');
 const dateElement = document.getElementById('current-date');
 const timeElement = document.getElementById('current-time');
 
 let isMusicPlaying = true;
-
-// הוספת פו��קציה לחישוב הזמן שנשאר עד סוף היום
-function updateTimeUntilNextDay() {
-    const now = new Date();
-    const endOfDay = new Date(now);
-    endOfDay.setHours(23, 59, 59, 999);
-    
-    const timeLeft = endOfDay - now;
-    const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-    const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-    
-    document.getElementById('timeUntilNextDay').textContent = 
-        `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-}
-
-// עדכון הטיימר כל שנייה
-setInterval(updateTimeUntilNextDay, 1000);
-updateTimeUntilNextDay(); // הצגה ראשונית
-
-// שיפור פונקציית getRandomQuote כך שא יחזור על אותו משפט
-let lastQuoteIndex = -1;
 
 function getDailyQuote() {
     const today = new Date().toDateString();
@@ -111,19 +87,21 @@ function getDailyQuote() {
 
 function displayNewQuote() {
     const quoteContainer = document.querySelector('.quote-container');
-    quoteContainer.style.opacity = 0;
+    quoteContainer.style.opacity = '0';
+    quoteContainer.style.transform = 'translateY(10px)';
     
     setTimeout(() => {
         const quote = getDailyQuote();
         document.querySelector('.quote.hebrew').textContent = quote;
-        quoteContainer.style.opacity = 1;
+        quoteContainer.style.opacity = '1';
+        quoteContainer.style.transform = 'translateY(0)';
     }, 300);
 }
 
 function toggleMusic() {
     if (isMusicPlaying) {
         music.pause();
-        musicToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        musicToggle.innerHTML = '<i class="fas fa-volume-xmark"></i>';
     } else {
         let playPromise = music.play();
         if (playPromise !== undefined) {
@@ -140,7 +118,6 @@ function toggleMusic() {
 function updateDateTime() {
     const now = new Date();
     
-    // עדכון תאריך
     const dateOptions = { 
         year: 'numeric', 
         month: 'long', 
@@ -149,7 +126,6 @@ function updateDateTime() {
     };
     dateElement.textContent = now.toLocaleDateString('he-IL', dateOptions);
     
-    // עדכון שעה
     timeElement.textContent = now.toLocaleTimeString('he-IL', { 
         hour: '2-digit', 
         minute: '2-digit', 
@@ -157,7 +133,6 @@ function updateDateTime() {
     });
 }
 
-// הפעלת מוזיקה אוטומטית כטעינת הדף
 window.addEventListener('load', function() {
     let playPromise = music.play();
     if (playPromise !== undefined) {
@@ -166,18 +141,12 @@ window.addEventListener('load', function() {
             isMusicPlaying = true;
         }).catch(error => {
             console.log("Auto-play prevented:", error);
-            // נסה להפעיל שוב אחרי שנייה
-            setTimeout(() => {
-                music.play().then(() => {
-                    musicToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
-                    isMusicPlaying = true;
-                }).catch(() => {});
-            }, 1000);
+            musicToggle.innerHTML = '<i class="fas fa-volume-xmark"></i>';
+            isMusicPlaying = false;
         });
     }
 });
 
-// הוספת הפעלת מוזיקה בכל קליק על העמוד
 document.addEventListener('click', function() {
     if (!isMusicPlaying) {
         let playPromise = music.play();
@@ -190,33 +159,16 @@ document.addEventListener('click', function() {
             });
         }
     }
-}, { once: true }); // יפעל רק פעם אחת
+}, { once: true });
 
-// עדכון זמן כל שנייה
 setInterval(updateDateTime, 1000);
-
-// הצגת זמן ראשוני
 updateDateTime();
-
-// הצג משפט ראשון
 displayNewQuote();
-
-// Event listeners
-newQuoteButton.addEventListener('click', () => {
-    displayNewQuote();
-    newQuoteButton.style.transform = 'scale(0.95)';
-    setTimeout(() => {
-        newQuoteButton.style.transform = 'scale(1)';
-    }, 100);
-});
 
 musicToggle.addEventListener('click', toggleMusic);
 
-// הוספת מעברים לציטוטים
-hebrewQuote.style.transition = 'opacity 0.3s ease';
-englishQuote.style.transition = 'opacity 0.3s ease'; 
+hebrewQuote.style.transition = 'opacity 0.4s ease, transform 0.4s ease';
 
-// פונקציות השיתוף
 function shareQuote(platform) {
     const quoteText = document.querySelector('.hebrew').textContent;
     const websiteUrl = 'https://nirfit.github.io/Daily-motivation/';
@@ -233,7 +185,6 @@ function shareQuote(platform) {
             window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(websiteUrl)}&quote=${encodeURIComponent(quoteText)}`);
             break;
         case 'instagram':
-            // אינסטגרם לא תומך בשיתוף ישיר דרך URL, אז נעתיק את הטקסט
             copyToClipboard(shareText);
             window.open('https://www.instagram.com');
             alert('הטקסט הועתק! כעת תוכל להדביק אותו באינסטגרם');
@@ -250,15 +201,16 @@ function copyQuote() {
         const copyBtn = document.querySelector('.share-btn.copy');
         const originalIcon = copyBtn.innerHTML;
         copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+        copyBtn.style.color = '#a78bfa';
         setTimeout(() => {
             copyBtn.innerHTML = originalIcon;
+            copyBtn.style.color = '';
         }, 2000);
     });
 }
 
-// פונקציית עזר להעתקה
 function copyToClipboard(text) {
     navigator.clipboard.writeText(text).catch(err => {
         console.error('Failed to copy text: ', err);
     });
-} 
+}
