@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Let's Learn English! - לומדים אנגלית</title>
+    <link rel="stylesheet" href="kids-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700;900&family=Fredoka+One&family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating decorations -->
+    <div class="floating-decorations">
+        <div class="floating-shape shape-star">&#11088;</div>
+        <div class="floating-shape shape-heart">&#10084;&#65039;</div>
+        <div class="floating-shape shape-rainbow">&#127752;</div>
+        <div class="floating-shape shape-sun">&#9728;&#65039;</div>
+        <div class="floating-shape shape-butterfly">&#129419;</div>
+        <div class="floating-shape shape-flower">&#127804;</div>
+    </div>
+
+    <!-- Header -->
+    <header class="main-header">
+        <div class="header-content">
+            <div class="logo-area">
+                <span class="logo-emoji">&#128218;</span>
+                <h1 class="site-title">Let's Learn English!</h1>
+                <p class="site-subtitle">לומדים אנגלית בכיף! &#127881;</p>
+            </div>
+            <div class="day-info">
+                <div class="day-badge">
+                    <span class="day-label">&#128197; שיעור יומי</span>
+                    <span id="lesson-number" class="lesson-num">שיעור 1</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation - Lesson Topics -->
+    <nav class="topics-nav">
+        <button class="topic-btn active" data-topic="0" onclick="switchTopic(0)">
+            <span class="topic-icon">&#127912;</span>
+            <span class="topic-name">צבעים<br>Colors</span>
+        </button>
+        <button class="topic-btn" data-topic="1" onclick="switchTopic(1)">
+            <span class="topic-icon">&#128290;</span>
+            <span class="topic-name">מספרים<br>Numbers</span>
+        </button>
+        <button class="topic-btn" data-topic="2" onclick="switchTopic(2)">
+            <span class="topic-icon">&#128049;</span>
+            <span class="topic-name">חיות<br>Animals</span>
+        </button>
+        <button class="topic-btn" data-topic="3" onclick="switchTopic(3)">
+            <span class="topic-icon">&#127822;</span>
+            <span class="topic-name">פירות<br>Fruits</span>
+        </button>
+        <button class="topic-btn" data-topic="4" onclick="switchTopic(4)">
+            <span class="topic-icon">&#128104;&#8205;&#128105;&#8205;&#128103;&#8205;&#128102;</span>
+            <span class="topic-name">משפחה<br>Family</span>
+        </button>
+        <button class="topic-btn" data-topic="5" onclick="switchTopic(5)">
+            <span class="topic-icon">&#128075;</span>
+            <span class="topic-name">גוף<br>Body</span>
+        </button>
+    </nav>
+
+    <!-- Main Lesson Area -->
+    <main class="lesson-area">
+        <div class="lesson-header">
+            <h2 id="lesson-title" class="lesson-title">&#127912; Colors - צבעים</h2>
+            <p class="lesson-instruction">&#128264; לחצו על כל מילה כדי לשמוע איך אומרים אותה באנגלית!</p>
+        </div>
+
+        <div id="words-grid" class="words-grid">
+            <!-- Words will be inserted by JS -->
+        </div>
+    </main>
+
+    <!-- Quiz Section -->
+    <section class="quiz-section" id="quiz-section">
+        <div class="quiz-header">
+            <h2 class="quiz-title">&#127941; בואו נתרגל!</h2>
+            <div class="score-display">
+                <span class="score-stars" id="score-stars"></span>
+                <span class="score-text" id="score-text">0 / 0</span>
+            </div>
+        </div>
+        <div class="quiz-content">
+            <div class="quiz-question" id="quiz-question">
+                <div class="quiz-emoji" id="quiz-emoji">&#128049;</div>
+                <p class="quiz-prompt" id="quiz-prompt">מה זה באנגלית?</p>
+                <p class="quiz-hebrew-word" id="quiz-hebrew-word">חתול</p>
+            </div>
+            <div class="quiz-options" id="quiz-options">
+                <!-- Options will be inserted by JS -->
+            </div>
+            <div class="quiz-feedback" id="quiz-feedback"></div>
+            <button class="quiz-next-btn" id="quiz-next-btn" onclick="nextQuestion()">
+                השאלה הבאה &#10145;&#65039;
+            </button>
+        </div>
+    </section>
+
+    <!-- Daily Sentence -->
+    <section class="daily-sentence">
+        <div class="sentence-card">
+            <h3 class="sentence-label">&#128172; משפט היום</h3>
+            <p class="sentence-english" id="daily-sentence-en"></p>
+            <p class="sentence-hebrew" id="daily-sentence-he"></p>
+            <button class="listen-btn" onclick="speakDailySentence()">
+                <i class="fas fa-volume-up"></i> תשמעו!
+            </button>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="kids-footer">
+        <p>&#128150; נבנה באהבה על ידי ניר חמו &copy; 2024</p>
+        <a href="index.html" class="back-link">&#127968; לדף הראשי</a>
+    </footer>
+
+    <script src="kids-script.js"></script>
+</body>
+</html>
