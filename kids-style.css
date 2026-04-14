@@ -1,0 +1,690 @@
+/* ===== KIDS ENGLISH LEARNING SITE ===== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Heebo', 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #ffd86f 100%);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    overflow-x: hidden;
+    padding-bottom: 80px;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    25% { background-position: 50% 0%; }
+    50% { background-position: 100% 50%; }
+    75% { background-position: 50% 100%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ===== FLOATING DECORATIONS ===== */
+.floating-decorations {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.floating-shape {
+    position: absolute;
+    font-size: 2rem;
+    animation: floatAround 20s infinite ease-in-out;
+    opacity: 0.6;
+}
+
+.shape-star { top: 10%; left: 5%; animation-delay: 0s; font-size: 2.5rem; }
+.shape-heart { top: 20%; right: 8%; animation-delay: -3s; font-size: 2rem; }
+.shape-rainbow { top: 60%; left: 3%; animation-delay: -6s; font-size: 3rem; }
+.shape-sun { top: 5%; right: 25%; animation-delay: -9s; font-size: 2.8rem; }
+.shape-butterfly { bottom: 20%; right: 5%; animation-delay: -12s; font-size: 2.2rem; }
+.shape-flower { bottom: 30%; left: 10%; animation-delay: -15s; font-size: 2.5rem; }
+
+@keyframes floatAround {
+    0%, 100% { transform: translate(0, 0) rotate(0deg); }
+    25% { transform: translate(30px, -20px) rotate(10deg); }
+    50% { transform: translate(-20px, 30px) rotate(-5deg); }
+    75% { transform: translate(15px, 15px) rotate(8deg); }
+}
+
+/* ===== HEADER ===== */
+.main-header {
+    position: relative;
+    z-index: 1;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 0 0 30px 30px;
+    padding: 1.5rem 2rem;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+}
+
+.header-content {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.logo-emoji {
+    font-size: 2.5rem;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.site-title {
+    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-size: 2rem;
+    background: linear-gradient(135deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff);
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradientText 3s ease infinite;
+}
+
+@keyframes gradientText {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+}
+
+.site-subtitle {
+    font-size: 1rem;
+    color: #666;
+    font-weight: 700;
+}
+
+.day-badge {
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    border-radius: 20px;
+    padding: 0.6rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+    box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+}
+
+.day-label {
+    font-size: 0.85rem;
+    color: #c0392b;
+    font-weight: 700;
+}
+
+.lesson-num {
+    font-size: 1.1rem;
+    font-weight: 900;
+    color: #e74c3c;
+}
+
+/* ===== TOPICS NAVIGATION ===== */
+.topics-nav {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 0.6rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 0 1rem;
+    margin-bottom: 1.5rem;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.topic-btn {
+    background: rgba(255, 255, 255, 0.9);
+    border: 3px solid transparent;
+    border-radius: 20px;
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    min-width: 90px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.topic-btn:hover {
+    transform: translateY(-5px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.topic-btn.active {
+    border-color: #ff6b6b;
+    background: linear-gradient(135deg, #fff5f5, #ffe0e0);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.3);
+}
+
+.topic-icon {
+    font-size: 1.8rem;
+}
+
+.topic-name {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #444;
+    text-align: center;
+    line-height: 1.3;
+}
+
+/* ===== LESSON AREA ===== */
+.lesson-area {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto 2rem auto;
+    padding: 0 1rem;
+}
+
+.lesson-header {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+}
+
+.lesson-title {
+    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.lesson-instruction {
+    font-size: 1rem;
+    color: #888;
+    font-weight: 600;
+}
+
+/* ===== WORDS GRID ===== */
+.words-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    animation: fadeInGrid 0.5s ease-out;
+}
+
+@keyframes fadeInGrid {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.word-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    border: 3px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.word-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 24px 24px 0 0;
+}
+
+.word-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+}
+
+.word-card:active {
+    transform: scale(0.95);
+}
+
+.word-card.speaking {
+    border-color: #4d96ff;
+    animation: pulse 0.6s ease;
+    box-shadow: 0 0 0 8px rgba(77, 150, 255, 0.2);
+}
+
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(77, 150, 255, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(77, 150, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(77, 150, 255, 0); }
+}
+
+.word-emoji {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.word-card:hover .word-emoji {
+    transform: scale(1.2);
+    animation: wiggle 0.5s ease;
+}
+
+@keyframes wiggle {
+    0%, 100% { transform: scale(1.2) rotate(0deg); }
+    25% { transform: scale(1.2) rotate(-10deg); }
+    75% { transform: scale(1.2) rotate(10deg); }
+}
+
+.word-english {
+    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-size: 1.4rem;
+    color: #333;
+    margin-bottom: 0.3rem;
+    direction: ltr;
+}
+
+.word-hebrew {
+    font-size: 1rem;
+    color: #888;
+    font-weight: 700;
+}
+
+.word-speaker {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 1rem;
+    color: #4d96ff;
+    opacity: 0.6;
+    transition: opacity 0.3s ease;
+}
+
+.word-card:hover .word-speaker {
+    opacity: 1;
+}
+
+/* Color swatch for color cards */
+.color-swatch {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin: 0 auto 0.5rem;
+    border: 3px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== QUIZ SECTION ===== */
+.quiz-section {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+    padding: 0 1rem;
+}
+
+.quiz-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 24px 24px 0 0;
+    padding: 1.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.quiz-title {
+    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.score-display {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.score-stars {
+    font-size: 1.3rem;
+}
+
+.score-text {
+    font-size: 1.1rem;
+    font-weight: 800;
+    color: #ffd93d;
+}
+
+.quiz-content {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 0 0 24px 24px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.quiz-question {
+    margin-bottom: 1.5rem;
+}
+
+.quiz-emoji {
+    font-size: 4rem;
+    margin-bottom: 0.5rem;
+    animation: bounce 2s infinite;
+}
+
+.quiz-prompt {
+    font-size: 1.2rem;
+    color: #666;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+}
+
+.quiz-hebrew-word {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #333;
+}
+
+.quiz-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.quiz-option {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    border: 3px solid #dee2e6;
+    border-radius: 16px;
+    padding: 1rem;
+    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-size: 1.2rem;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    direction: ltr;
+}
+
+.quiz-option:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+    border-color: #4d96ff;
+    background: linear-gradient(135deg, #e8f4fd, #d6eaf8);
+}
+
+.quiz-option.correct {
+    background: linear-gradient(135deg, #d4edda, #c3e6cb);
+    border-color: #28a745;
+    color: #155724;
+    animation: correctPop 0.5s ease;
+}
+
+@keyframes correctPop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+.quiz-option.wrong {
+    background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+    border-color: #dc3545;
+    color: #721c24;
+    animation: shake 0.5s ease;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+}
+
+.quiz-option:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.quiz-feedback {
+    font-size: 1.3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    min-height: 2rem;
+}
+
+.quiz-feedback.correct {
+    color: #28a745;
+}
+
+.quiz-feedback.wrong {
+    color: #dc3545;
+}
+
+.quiz-next-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 16px;
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-family: 'Heebo', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: none;
+}
+
+.quiz-next-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.quiz-next-btn.visible {
+    display: inline-block;
+    animation: fadeInGrid 0.3s ease;
+}
+
+/* ===== DAILY SENTENCE ===== */
+.daily-sentence {
+    position: relative;
+    z-index: 1;
+    max-width: 600px;
+    margin: 0 auto 2rem auto;
+    padding: 0 1rem;
+}
+
+.sentence-card {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 24px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.08);
+    border: 3px dashed #ffd93d;
+}
+
+.sentence-label {
+    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-size: 1.3rem;
+    color: #f39c12;
+    margin-bottom: 1rem;
+}
+
+.sentence-english {
+    font-family: 'Fredoka One', 'Nunito', cursive;
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 0.5rem;
+    direction: ltr;
+    line-height: 1.4;
+}
+
+.sentence-hebrew {
+    font-size: 1.2rem;
+    color: #888;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.listen-btn {
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    color: #c0392b;
+    border: none;
+    border-radius: 50px;
+    padding: 0.8rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 800;
+    font-family: 'Heebo', sans-serif;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 154, 158, 0.4);
+}
+
+.listen-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 25px rgba(255, 154, 158, 0.5);
+}
+
+.listen-btn:active {
+    transform: scale(0.95);
+}
+
+/* ===== FOOTER ===== */
+.kids-footer {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 1.5rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: white;
+    text-decoration: none;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1.2rem;
+    border-radius: 50px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+.back-link:hover {
+    background: rgba(255, 255, 255, 0.35);
+    transform: translateY(-2px);
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .main-header {
+        padding: 1rem 1.2rem;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .header-content {
+        justify-content: center;
+        text-align: center;
+    }
+
+    .site-title {
+        font-size: 1.5rem;
+    }
+
+    .topics-nav {
+        gap: 0.4rem;
+    }
+
+    .topic-btn {
+        min-width: 72px;
+        padding: 0.6rem 0.5rem;
+        border-radius: 16px;
+    }
+
+    .topic-icon {
+        font-size: 1.4rem;
+    }
+
+    .topic-name {
+        font-size: 0.65rem;
+    }
+
+    .words-grid {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 0.8rem;
+    }
+
+    .word-card {
+        padding: 1.2rem 0.8rem;
+        border-radius: 20px;
+    }
+
+    .word-emoji {
+        font-size: 2.5rem;
+    }
+
+    .word-english {
+        font-size: 1.2rem;
+    }
+
+    .lesson-title {
+        font-size: 1.4rem;
+    }
+
+    .quiz-options {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.6rem;
+    }
+
+    .quiz-option {
+        font-size: 1rem;
+        padding: 0.8rem;
+    }
+
+    .sentence-english {
+        font-size: 1.4rem;
+    }
+
+    .floating-shape {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .words-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .quiz-options {
+        grid-template-columns: 1fr;
+    }
+
+    .site-title {
+        font-size: 1.3rem;
+    }
+}
