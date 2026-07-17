@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מעקב מטוסי תדלוק ובכירים - ארה"ב | חי</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #0a0f1c;
+            --panel: #0e1526;
+            --panel2: #141f38;
+            --border: #223052;
+            --text: #e8edf7;
+            --muted: #8fa0c2;
+            --tanker: #ffb020;
+            --vip: #ff4d6d;
+            --other: #4dc3ff;
+            --ok: #35d07f;
+        }
+        html, body { height: 100%; }
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 10px 18px;
+            background: linear-gradient(90deg, #0f1930, #0b1322);
+            border-bottom: 1px solid var(--border);
+            flex-wrap: wrap;
+            z-index: 500;
+        }
+        header h1 { font-size: 1.12rem; font-weight: 900; }
+        header h1 span { color: var(--tanker); }
+        .status { display: flex; align-items: center; gap: 8px; font-size: .8rem; color: var(--muted); }
+        .dot { width: 9px; height: 9px; border-radius: 50%; background: #666; }
+        .dot.live { background: var(--ok); box-shadow: 0 0 8px var(--ok); animation: pulse 1.6s infinite; }
+        .dot.err { background: #ff5555; }
+        @keyframes pulse { 50% { opacity: .4; } }
+        .counts { display: flex; gap: 10px; margin-inline-start: auto; flex-wrap: wrap; align-items: center; }
+        .chip {
+            padding: 4px 12px; border-radius: 999px; font-size: .8rem; font-weight: 700;
+            border: 1px solid var(--border); background: var(--panel2);
+            cursor: pointer; user-select: none; transition: .15s;
+        }
+        .chip b { font-size: .95rem; }
+        .chip.tanker { border-color: var(--tanker); color: var(--tanker); }
+        .chip.vip { border-color: var(--vip); color: var(--vip); }
+        .chip.other { border-color: var(--other); color: var(--other); }
+        .chip.off { opacity: .35; filter: grayscale(.7); }
+        .home-link { color: var(--muted); text-decoration: none; font-size: .8rem; }
+        .home-link:hover { color: var(--text); }
+        main { flex: 1; display: flex; min-height: 0; }
+        #map { flex: 1; background: #0a0f1c; }
+        aside {
+            width: 350px; min-width: 350px;
+            background: var(--panel);
+            border-inline-start: 1px solid var(--border);
+            display: flex; flex-direction: column; min-height: 0;
+        }
+        .aside-head { padding: 12px 14px 8px; border-bottom: 1px solid var(--border); }
+        .aside-head h2 { font-size: .95rem; font-weight: 900; }
+        .aside-head p { font-size: .72rem; color: var(--muted); margin-top: 2px; line-height: 1.5; }
+        #search {
+            width: 100%; margin-top: 8px; padding: 7px 10px; border-radius: 8px;
+            border: 1px solid var(--border); background: var(--panel2); color: var(--text);
+            font-family: inherit; font-size: .82rem;
+        }
+        #list { flex: 1; overflow-y: auto; padding: 8px; }
+        .card {
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-inline-start: 4px solid var(--other);
+            border-radius: 10px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: .15s;
+        }
+        .card:hover { transform: translateX(-3px); border-color: #3a4d7d; }
+        .card.sel { outline: 2px solid #ffffff44; border-color: #4a6099; }
+        .card.tanker { border-inline-start-color: var(--tanker); }
+        .card.vip { border-inline-start-color: var(--vip); }
+        .card .row1 { display: flex; align-items: center; gap: 8px; }
+        .card .cs { font-weight: 900; font-size: .95rem; letter-spacing: .5px; }
+        .card .tag { margin-inline-start: auto; font-size: .65rem; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: #0a0f1c; }
+        .card.tanker .tag { color: var(--tanker); }
+        .card.vip .tag { color: var(--vip); }
+        .card.other .tag { color: var(--other); }
+        .card .desc { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+        .card .data { display: flex; gap: 12px; font-size: .72rem; margin-top: 4px; color: #b9c6e2; flex-wrap: wrap; }
+        .empty { text-align: center; color: var(--muted); font-size: .85rem; padding: 30px 10px; line-height: 1.8; }
+        footer {
+            padding: 6px 14px; font-size: .68rem; color: var(--muted);
+            background: #0b1322; border-top: 1px solid var(--border);
+            display: flex; gap: 14px; flex-wrap: wrap;
+        }
+        footer a { color: #7fa7e8; text-decoration: none; }
+        .leaflet-container { font-family: 'Heebo', sans-serif; background: #0a0f1c; }
+        .plane-wrap { will-change: transform; }
+        .plane-lbl {
+            background: rgba(10,15,28,.72); border: none; color: #fff; font-size: 10px;
+            font-weight: 700; padding: 1px 5px; border-radius: 4px; white-space: nowrap;
+            box-shadow: none; text-shadow: 0 1px 2px #000;
+        }
+        .plane-lbl.tanker { color: var(--tanker); }
+        .plane-lbl.vip { color: var(--vip); }
+        .plane-lbl::before { display: none; }
+        .popup { direction: rtl; font-family: 'Heebo', sans-serif; min-width: 210px; }
+        .popup .p-cs { font-weight: 900; font-size: 1.05rem; }
+        .popup .p-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 10px; margin-top: 6px; font-size: .78rem; color: #333; }
+        .popup .p-grid b { color: #000; }
+        .popup .p-links { margin-top: 8px; font-size: .78rem; display: flex; gap: 12px; }
+        .refresh-note { font-size: .72rem; color: var(--muted); }
+        @media (max-width: 800px) {
+            main { flex-direction: column; }
+            aside { width: 100%; min-width: 0; max-height: 42vh; border-inline-start: none; border-top: 1px solid var(--border); }
+            #map { min-height: 45vh; }
+            header h1 { font-size: .95rem; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>✈️ מעקב חי: <span>מטוסי תדלוק</span> ומטוסי <span style="color:var(--vip)">בכירים</span> — ארה"ב</h1>
+        <div class="status">
+            <div class="dot" id="statusDot"></div>
+            <span id="statusText">מתחבר...</span>
+            <span class="refresh-note" id="refreshNote"></span>
+        </div>
+        <div class="counts">
+            <div class="chip tanker" id="chipTanker" title="הצג/הסתר מטוסי תדלוק">⛽ תדלוק: <b id="cntTanker">0</b></div>
+            <div class="chip vip" id="chipVip" title="הצג/הסתר מטוסי בכירים">👑 בכירים: <b id="cntVip">0</b></div>
+            <div class="chip other" id="chipOther" title="הצג/הסתר שאר מטוסים צבאיים">🪖 צבאי אחר: <b id="cntOther">0</b></div>
+            <a class="home-link" href="index.html">→ מוטיבציה יומית</a>
+        </div>
+    </header>
+    <main>
+        <div id="map"></div>
+        <aside>
+            <div class="aside-head">
+                <h2>🔥 הכי מעניינים עכשיו</h2>
+                <p>מדורג: בכירים תחילה, אחריהם מטוסי תדלוק פעילים. לחיצה על כרטיס עוקבת אחרי המטוס במפה. קישור FR24 מציג כמה עוקבים אחריו בפלייטראדר.</p>
+                <input id="search" type="text" placeholder="🔎 חיפוש לפי אות קריאה / זנב / סוג...">
+            </div>
+            <div id="list"><div class="empty">טוען נתונים חיים...</div></div>
+        </aside>
+    </main>
+    <footer>
+        <span>נתונים חיים: רשתות ADS-B פתוחות (adsb.lol / airplanes.live / adsb.fi) — רענון כל 15 שניות, תנועה רציפה בין עדכונים ושובל מסלול מדויק בזמן אמת.</span>
+        <a href="https://www.flightradar24.com/flights/most-tracked" target="_blank" rel="noopener">📊 הנצפים ביותר עכשיו ב-Flightradar24</a>
+        <span>הערה: חלק מהמטוסים הצבאיים מסתירים שידור מעל האוקיינוס.</span>
+    </footer>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+    'use strict';
+
+    // ---- free, CORS-enabled ADS-B sources (no API key). Tried in order. ----
+    const SOURCES = [
+        { name: 'adsb.lol', url: 'https://api.adsb.lol/v2/mil' },
+        { name: 'airplanes.live', url: 'https://api.airplanes.live/v2/mil' },
+        { name: 'adsb.fi', url: 'https://opendata.adsb.fi/api/v2/mil' },
+    ];
+    const REFRESH_MS = 15000;
+
+    // ---- classification ----
+    const TANKER_TYPES = new Set(['K35R', 'K35E', 'K35A', 'K35T', 'KC46', 'K46A', 'KC10', 'DC10', 'KC30', 'A332', 'K30B']);
+    const TANKER_DESC = /KC-?135|KC-?46|KC-?10|KC-?130|STRATOTANKER|PEGASUS|EXTENDER|VOYAGER/i;
+    const VIP_TYPES = new Set(['VC25', 'B742', 'E4', 'E4B', 'E6', 'E6B', 'GLF5', 'G5', 'GA5C', 'GLF6', 'C32', 'C32A', 'C32B', 'C37', 'C37A', 'C37B', 'C40', 'C40B', 'C40C', 'B752', 'B739']);
+    const VIP_DESC = /VC-?25|C-?32[AB]?\b|C-?37|C-?40[ABC]?\b|E-?4B|E-?6B|NIGHTWATCH|MERCURY|CLIPPER/i;
+    const VIP_CALLSIGN = /^(AF1|AF2|SAM\d|SAM[A-Z]?\d|VENUS|ORDER|GORDO|SPAR|EXEC1)/i;
+
+    function isUS(ac) {
+        const hex = (ac.hex || '').toUpperCase();
+        if (hex.startsWith('AE') || hex.startsWith('AD')) return true; // US military ICAO block
+        const op = (ac.ownOp || '').toUpperCase();
+        return /UNITED STATES|US AIR FORCE|USAF|US NAVY|US ARMY|US MARINE|MARINE CORPS/.test(op);
+    }
+    function classify(ac) {
+        const t = (ac.t || '').toUpperCase();
+        const desc = ac.desc || '';
+        const cs = (ac.flight || '').trim();
+        if (VIP_CALLSIGN.test(cs)) return 'vip';
+        if (TANKER_TYPES.has(t) || TANKER_DESC.test(desc)) return 'tanker';
+        if (VIP_TYPES.has(t) || VIP_DESC.test(desc)) return 'vip';
+        return 'other';
+    }
+    const CAT_HE = { tanker: '⛽ מטוס תדלוק', vip: '👑 מטוס בכירים', other: '🪖 צבאי' };
+    const CAT_COLOR = { tanker: '#ffb020', vip: '#ff4d6d', other: '#4dc3ff' };
+
+    // ---- map ----
+    const map = L.map('map', { worldCopyJump: true, zoomControl: true, preferCanvas: false }).setView([33, 5], 3);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap &copy; CARTO', subdomains: 'abcd', maxZoom: 14,
+    }).addTo(map);
+
+    // ---- state ----
+    const planes = new Map();   // hex -> { ac, marker, trailLine, trailPts, lat, lon, fixLat, fixLon, fixT }
+    const visible = { tanker: true, vip: true, other: true };
+    let followHex = null;
+    let searchTerm = '';
+    let firstLoad = true;
+
+    function planeIcon(cat, track) {
+        const c = CAT_COLOR[cat];
+        const rot = track == null ? 0 : track;
+        return L.divIcon({
+            className: 'plane-wrap',
+            iconSize: [32, 32], iconAnchor: [16, 16],
+            html: `<svg width="32" height="32" viewBox="0 0 24 24"
+                     style="transform:rotate(${rot}deg);filter:drop-shadow(0 0 4px ${c})">
+                     <path fill="${c}" d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+                   </svg>`,
+        });
+    }
+
+    function fmtAlt(ac) {
+        if (ac.alt_baro === 'ground') return 'על הקרקע';
+        const a = ac.alt_baro ?? ac.alt_geom;
+        return a == null ? '—' : Math.round(a).toLocaleString() + ' רגל';
+    }
+    const fmtSpd = ac => ac.gs == null ? '—' : Math.round(ac.gs) + ' קשר';
+    const fmtVs = ac => { const v = ac.baro_rate ?? ac.geom_rate; return v == null ? '—' : (v > 0 ? '▲ ' : v < 0 ? '▼ ' : '') + Math.abs(Math.round(v)).toLocaleString() + ' fpm'; };
+    const fmtTrk = ac => ac.track != null ? Math.round(ac.track) + '°' : '—';
+
+    function fr24Link(ac) {
+        const cs = (ac.flight || '').trim();
+        return ac.r ? `https://www.flightradar24.com/data/aircraft/${encodeURIComponent(ac.r)}`
+                    : `https://www.flightradar24.com/${encodeURIComponent(cs || ac.hex)}`;
+    }
+    function popupHtml(ac, cat) {
+        const cs = (ac.flight || '').trim() || '(ללא אות קריאה)';
+        return `<div class="popup">
+            <div class="p-cs" style="color:${CAT_COLOR[cat]}">${cs}</div>
+            <div style="font-size:.78rem;color:#555;margin-top:1px">${CAT_HE[cat]} • ${ac.desc || ac.t || ''}</div>
+            <div class="p-grid">
+                ${ac.r ? `<div>זנב:</div><div><b>${ac.r}</b></div>` : ''}
+                <div>גובה:</div><div><b>${fmtAlt(ac)}</b></div>
+                <div>מהירות:</div><div><b>${fmtSpd(ac)}</b></div>
+                <div>שיפוע:</div><div><b>${fmtVs(ac)}</b></div>
+                <div>כיוון:</div><div><b>${fmtTrk(ac)}</b></div>
+                ${ac.squawk ? `<div>קוד:</div><div><b>${ac.squawk}</b></div>` : ''}
+                <div>Hex:</div><div>${ac.hex}</div>
+            </div>
+            <div class="p-links">
+                <a href="${fr24Link(ac)}" target="_blank" rel="noopener">FR24 ↗</a>
+                <a href="https://globe.adsbexchange.com/?icao=${ac.hex}" target="_blank" rel="noopener">ADSB-Exchange ↗</a>
+            </div>
+        </div>`;
+    }
+
+    function upsertPlane(ac) {
+        const cat = ac._cat;
+        let p = planes.get(ac.hex);
+        if (!p) {
+            const marker = L.marker([ac.lat, ac.lon], { icon: planeIcon(cat, ac.track), zIndexOffset: cat === 'other' ? 0 : 400 });
+            marker.bindPopup(() => popupHtml(p.ac, p.ac._cat));
+            marker.on('click', () => { followHex = ac.hex; renderList(); });
+            p = { ac, marker, trailLine: null, trailPts: [], lat: ac.lat, lon: ac.lon, fixLat: ac.lat, fixLon: ac.lon, fixT: Date.now() };
+            planes.set(ac.hex, p);
+        } else {
+            p.ac = ac;
+            p.fixLat = ac.lat; p.fixLon = ac.lon; p.fixT = Date.now();
+            p.marker.setIcon(planeIcon(cat, ac.track));
+        }
+        // permanent callsign label for tanker/vip
+        const cs = (ac.flight || '').trim();
+        if ((cat === 'tanker' || cat === 'vip') && cs) {
+            if (!p.marker.getTooltip()) {
+                p.marker.bindTooltip(cs, { permanent: true, direction: 'right', offset: [12, 0], className: 'plane-lbl ' + cat });
+            } else { p.marker.setTooltipContent(cs); }
+        }
+        // accurate trail from real fixes
+        const last = p.trailPts[p.trailPts.length - 1];
+        if (!last || last[0] !== ac.lat || last[1] !== ac.lon) {
+            p.trailPts.push([ac.lat, ac.lon]);
+            if (p.trailPts.length > 500) p.trailPts.shift();
+        }
+        if (p.trailPts.length > 1) {
+            if (!p.trailLine) p.trailLine = L.polyline(p.trailPts, { color: CAT_COLOR[cat], weight: 2, opacity: .5 });
+            else p.trailLine.setLatLngs(p.trailPts);
+        }
+        applyOne(p);
+    }
+
+    function matchesSearch(ac) {
+        if (!searchTerm) return true;
+        const s = searchTerm.toLowerCase();
+        return ((ac.flight || '') + ' ' + (ac.r || '') + ' ' + (ac.t || '') + ' ' + (ac.desc || '')).toLowerCase().includes(s);
+    }
+    function applyOne(p) {
+        const show = visible[p.ac._cat] && matchesSearch(p.ac);
+        if (show) {
+            if (!map.hasLayer(p.marker)) p.marker.addTo(map);
+            if (p.trailLine && !map.hasLayer(p.trailLine)) p.trailLine.addTo(map);
+        } else {
+            if (map.hasLayer(p.marker)) map.removeLayer(p.marker);
+            if (p.trailLine && map.hasLayer(p.trailLine)) map.removeLayer(p.trailLine);
+        }
+    }
+    function applyAll() { for (const p of planes.values()) applyOne(p); renderList(); }
+
+    // ---- smooth dead-reckoning movement between API updates (like FR24) ----
+    function animate() {
+        const now = Date.now();
+        for (const p of planes.values()) {
+            const ac = p.ac;
+            if (ac.alt_baro === 'ground' || ac.gs == null || ac.track == null) {
+                p.marker.setLatLng([p.fixLat, p.fixLon]); continue;
+            }
+            const dt = Math.min((now - p.fixT) / 1000, REFRESH_MS / 1000 + 5); // seconds, capped
+            const nmPerSec = ac.gs / 3600;
+            const distNm = nmPerSec * dt;
+            const trk = ac.track * Math.PI / 180;
+            const dLat = (distNm / 60) * Math.cos(trk);
+            const latRad = p.fixLat * Math.PI / 180;
+            const dLon = (distNm / 60) * Math.sin(trk) / Math.max(Math.cos(latRad), 0.01);
+            p.lat = p.fixLat + dLat;
+            p.lon = p.fixLon + dLon;
+            p.marker.setLatLng([p.lat, p.lon]);
+        }
+        if (followHex && planes.has(followHex)) {
+            map.panTo(planes.get(followHex).marker.getLatLng(), { animate: true, duration: .5, noMoveStart: true });
+        }
+        requestAnimationFrame(animate);
+    }
+    requestAnimationFrame(animate);
+
+    function renderList() {
+        const listEl = document.getElementById('list');
+        const rank = ac => (ac._cat === 'vip' ? 2000 : ac._cat === 'tanker' ? 1000 : 0)
+            + (ac.alt_baro !== 'ground' ? 100 : 0) + (ac.gs || 0) / 10;
+        const shown = [...planes.values()].map(p => p.ac)
+            .filter(ac => visible[ac._cat] && matchesSearch(ac))
+            .sort((a, b) => rank(b) - rank(a));
+        if (!shown.length) {
+            listEl.innerHTML = '<div class="empty">אין כרגע מטוסים תואמים באוויר,<br>או שהנתונים עדיין נטענים.</div>';
+            return;
+        }
+        listEl.innerHTML = shown.slice(0, 80).map(ac => {
+            const cs = (ac.flight || '').trim() || '(ללא אות קריאה)';
+            const sel = ac.hex === followHex ? ' sel' : '';
+            return `<div class="card ${ac._cat}${sel}" data-hex="${ac.hex}">
+                <div class="row1"><span class="cs">${cs}</span><span class="tag">${CAT_HE[ac._cat]}</span></div>
+                <div class="desc">${ac.desc || ac.t || 'לא ידוע'} ${ac.r ? '• ' + ac.r : ''}</div>
+                <div class="data"><span>⬆ ${fmtAlt(ac)}</span><span>🚀 ${fmtSpd(ac)}</span><span>↕ ${fmtVs(ac)}</span></div>
+            </div>`;
+        }).join('');
+        listEl.querySelectorAll('.card').forEach(el => {
+            el.addEventListener('click', () => {
+                const p = planes.get(el.dataset.hex);
+                if (p) { followHex = el.dataset.hex; map.setView(p.marker.getLatLng(), Math.max(map.getZoom(), 6)); p.marker.openPopup(); renderList(); }
+            });
+        });
+    }
+
+    for (const cat of ['tanker', 'vip', 'other']) {
+        const chip = document.getElementById('chip' + cat[0].toUpperCase() + cat.slice(1));
+        chip.addEventListener('click', () => { visible[cat] = !visible[cat]; chip.classList.toggle('off', !visible[cat]); applyAll(); });
+    }
+    document.getElementById('search').addEventListener('input', e => { searchTerm = e.target.value.trim(); applyAll(); });
+
+    async function fetchData() {
+        for (const src of SOURCES) {
+            try {
+                const res = await fetch(src.url, { cache: 'no-store' });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                return { src: src.name, ac: data.ac || data.aircraft || [] };
+            } catch (e) { /* next source */ }
+        }
+        return null;
+    }
+
+    async function refresh() {
+        const dot = document.getElementById('statusDot');
+        const txt = document.getElementById('statusText');
+        const result = await fetchData();
+        if (!result) { dot.className = 'dot err'; txt.textContent = 'שגיאת חיבור למקורות — מנסה שוב'; return; }
+        const seen = new Set();
+        const counts = { tanker: 0, vip: 0, other: 0 };
+        const usable = result.ac.filter(ac => ac.lat != null && ac.lon != null && isUS(ac));
+        for (const ac of usable) {
+            ac._cat = classify(ac);
+            counts[ac._cat]++;
+            seen.add(ac.hex);
+            upsertPlane(ac);
+        }
+        for (const [hex, p] of planes) {
+            if (!seen.has(hex)) {
+                map.removeLayer(p.marker);
+                if (p.trailLine) map.removeLayer(p.trailLine);
+                planes.delete(hex);
+                if (followHex === hex) followHex = null;
+            }
+        }
+        document.getElementById('cntTanker').textContent = counts.tanker;
+        document.getElementById('cntVip').textContent = counts.vip;
+        document.getElementById('cntOther').textContent = counts.other;
+        dot.className = 'dot live';
+        txt.textContent = `חי • מקור: ${result.src} • ${usable.length} מטוסים אמריקאיים`;
+        renderList();
+        if (firstLoad && counts.tanker + counts.vip > 0) {
+            firstLoad = false;
+            const pts = usable.filter(a => a._cat !== 'other').map(a => [a.lat, a.lon]);
+            if (pts.length) map.fitBounds(L.latLngBounds(pts).pad(0.3), { maxZoom: 6 });
+        }
+    }
+
+    let nextIn = 0;
+    setInterval(() => { nextIn = Math.max(0, nextIn - 1); document.getElementById('refreshNote').textContent = nextIn ? `• רענון עוד ${nextIn}ש׳` : ''; }, 1000);
+    async function loop() { await refresh(); nextIn = REFRESH_MS / 1000; setTimeout(loop, REFRESH_MS); }
+    loop();
+    </script>
+</body>
+</html>
