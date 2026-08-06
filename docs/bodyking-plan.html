@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BODY KING — תוכנית רכישת לקוחות ל-90 יום</title>
+<style>
+  :root{
+    direction: rtl;
+    --bone:#FAF8F4; --bone-2:#F2EEE6; --rule:#DED7C9; --rule-soft:#E8E2D6;
+    --ink:#191713; --ink-2:#4A443A; --ink-3:#776F60;
+    --amber:#A9651F; --amber-soft:#F0E2CE;
+    --pine:#1F5652; --pine-soft:#DCE8E5;
+    --crit:#932618; --crit-soft:#F4DFDB;
+    --good:#3A6440;
+    --shadow: 0 1px 0 var(--rule-soft);
+    --sans:"Assistant","Noto Sans Hebrew","Arial Hebrew","Segoe UI",system-ui,sans-serif;
+    --mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+    --measure: 66ch;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bone:#131211; --bone-2:#1B1917; --rule:#332F2A; --rule-soft:#262320;
+      --ink:#E9E3D8; --ink-2:#B3ABA0; --ink-3:#877F73;
+      --amber:#D79447; --amber-soft:#2C2117;
+      --pine:#79B8B0; --pine-soft:#152522;
+      --crit:#DC7B6B; --crit-soft:#2A1815;
+      --good:#7FAE83;
+      --shadow: 0 1px 0 var(--rule-soft);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bone:#131211; --bone-2:#1B1917; --rule:#332F2A; --rule-soft:#262320;
+    --ink:#E9E3D8; --ink-2:#B3ABA0; --ink-3:#877F73;
+    --amber:#D79447; --amber-soft:#2C2117;
+    --pine:#79B8B0; --pine-soft:#152522;
+    --crit:#DC7B6B; --crit-soft:#2A1815;
+    --good:#7FAE83;
+  }
+  :root[data-theme="light"]{
+    --bone:#FAF8F4; --bone-2:#F2EEE6; --rule:#DED7C9; --rule-soft:#E8E2D6;
+    --ink:#191713; --ink-2:#4A443A; --ink-3:#776F60;
+    --amber:#A9651F; --amber-soft:#F0E2CE;
+    --pine:#1F5652; --pine-soft:#DCE8E5;
+    --crit:#932618; --crit-soft:#F4DFDB;
+    --good:#3A6440;
+  }
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bone); color:var(--ink);
+    font-family:var(--sans); font-size:17px; line-height:1.72;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px 96px}
+
+  /* ---------- masthead ---------- */
+  .mast{padding:56px 0 28px;border-bottom:2px solid var(--ink)}
+  .eyebrow{
+    font-family:var(--mono);font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-3);display:flex;gap:14px;flex-wrap:wrap;align-items:center;
+  }
+  .eyebrow span{white-space:nowrap}
+  h1{
+    font-size:clamp(30px,5.2vw,50px);line-height:1.1;margin:16px 0 10px;
+    font-weight:800;letter-spacing:-.02em;text-wrap:balance;
+  }
+  .dek{font-size:19px;color:var(--ink-2);max-width:60ch;margin:0;text-wrap:pretty}
+  .handle{font-family:var(--mono);color:var(--amber);font-weight:600}
+
+  /* ---------- vitals strip ---------- */
+  .vitals{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(148px,1fr));
+    gap:0;border-bottom:1px solid var(--rule);margin-bottom:40px;
+  }
+  .vital{padding:18px 20px 16px;border-inline-start:1px solid var(--rule-soft)}
+  .vital:last-child{border-inline-end:1px solid var(--rule-soft)}
+  .vital dt{font-size:12.5px;color:var(--ink-3);letter-spacing:.03em;margin:0 0 4px}
+  .vital dd{
+    margin:0;font-family:var(--mono);font-size:24px;font-weight:600;
+    font-variant-numeric:tabular-nums;letter-spacing:-.02em;
+  }
+  .vital small{display:block;font-family:var(--sans);font-size:12.5px;color:var(--ink-3);font-weight:400;margin-top:3px;line-height:1.45}
+  .vital.flag dd{color:var(--crit)}
+
+  /* ---------- layout ---------- */
+  .cols{display:grid;grid-template-columns:1fr;gap:0}
+  @media (min-width:960px){
+    .cols{grid-template-columns:210px minmax(0,1fr);gap:48px;align-items:start}
+    .rail{position:sticky;top:24px;display:block}
+  }
+  .rail{display:none;font-family:var(--mono);font-size:12.5px;line-height:1.9}
+  .rail ol{list-style:none;margin:0;padding:0;border-inline-start:1px solid var(--rule)}
+  .rail a{
+    display:block;padding:3px 14px 3px 0;color:var(--ink-3);text-decoration:none;
+    border-inline-start:2px solid transparent;margin-inline-start:-1px;
+  }
+  .rail a:hover,.rail a:focus-visible{color:var(--amber);border-inline-start-color:var(--amber)}
+  .rail .folio{color:var(--ink-3);opacity:.6;margin-inline-end:8px}
+
+  /* ---------- sections ---------- */
+  section{padding-top:8px;margin-bottom:56px;scroll-margin-top:20px}
+  .shead{display:flex;gap:14px;align-items:baseline;border-bottom:1px solid var(--ink);padding-bottom:8px;margin-bottom:24px}
+  .folio{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:600;font-variant-numeric:tabular-nums}
+  h2{font-size:clamp(21px,3vw,27px);margin:0;font-weight:750;letter-spacing:-.015em;text-wrap:balance}
+  h3{font-size:17.5px;font-weight:700;margin:34px 0 10px;letter-spacing:-.005em;text-wrap:balance}
+  h4{font-size:15px;font-weight:700;margin:24px 0 8px;color:var(--ink-2)}
+  p{margin:0 0 15px;max-width:var(--measure);text-wrap:pretty}
+  ul{max-width:var(--measure);padding-inline-start:20px;margin:0 0 15px}
+  li{margin-bottom:7px}
+  strong{font-weight:700}
+  em{font-style:italic;color:var(--ink-2)}
+  code,.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+  code{font-size:.88em;background:var(--bone-2);padding:1px 5px;border-radius:3px;border:1px solid var(--rule-soft)}
+  a{color:var(--amber)}
+  :focus-visible{outline:2px solid var(--amber);outline-offset:2px}
+
+  /* ---------- estimate chip ---------- */
+  .chip{
+    display:inline-block;font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;
+    text-transform:uppercase;padding:1px 6px;border-radius:2px;vertical-align:.12em;
+    background:var(--amber-soft);color:var(--amber);border:1px solid transparent;font-weight:600;
+  }
+  .chip.fact{background:var(--pine-soft);color:var(--pine)}
+
+  /* ---------- ledger ---------- */
+  .ledger{
+    max-width:var(--measure);margin:20px 0 22px;border:1px solid var(--rule);
+    background:var(--bone-2);border-radius:2px;overflow:hidden;
+  }
+  .ledger .lhead{
+    font-family:var(--mono);font-size:11px;letter-spacing:.11em;text-transform:uppercase;
+    color:var(--ink-3);padding:9px 16px;border-bottom:1px solid var(--rule);background:var(--bone);
+  }
+  .lrow{display:flex;justify-content:space-between;gap:16px;padding:8px 16px;border-bottom:1px dotted var(--rule)}
+  .lrow:last-child{border-bottom:0}
+  .lrow .lbl{color:var(--ink-2);font-size:15px}
+  .lrow .fig{font-family:var(--mono);font-variant-numeric:tabular-nums;font-weight:600;white-space:nowrap}
+  .lrow.total{background:var(--bone);border-top:2px solid var(--ink);border-bottom:0}
+  .lrow.total .lbl{font-weight:700;color:var(--ink)}
+  .lrow.neg .fig{color:var(--crit)}
+  .lrow.total .fig{color:var(--crit)}
+
+  /* ---------- callout ---------- */
+  .call{
+    max-width:var(--measure);margin:22px 0;padding:16px 18px;
+    background:var(--bone-2);border-inline-start:3px solid var(--amber);border-radius:0 2px 2px 0;
+  }
+  .call p:last-child{margin-bottom:0}
+  .call.crit{border-inline-start-color:var(--crit);background:var(--crit-soft)}
+  .call.ok{border-inline-start-color:var(--pine);background:var(--pine-soft)}
+  .call .ctag{
+    font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-3);display:block;margin-bottom:6px;font-weight:600;
+  }
+  .call.crit .ctag{color:var(--crit)}
+  .call.ok .ctag{color:var(--pine)}
+
+  /* ---------- tables ---------- */
+  .tw{overflow-x:auto;margin:20px 0 24px;border:1px solid var(--rule);border-radius:2px}
+  table{border-collapse:collapse;width:100%;min-width:620px;font-size:14.5px;background:var(--bone-2)}
+  th,td{padding:9px 13px;text-align:start;border-bottom:1px solid var(--rule-soft);vertical-align:top;line-height:1.55}
+  thead th{
+    background:var(--bone);font-family:var(--mono);font-size:11px;letter-spacing:.09em;
+    text-transform:uppercase;color:var(--ink-3);font-weight:600;border-bottom:1px solid var(--rule);
+    position:sticky;top:0;
+  }
+  tbody tr:last-child td{border-bottom:0}
+  td.r{font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+  td.rank{font-family:var(--mono);color:var(--ink-3);width:1%}
+  .tier-hi{color:var(--good);font-weight:600}
+  .tier-md{color:var(--amber);font-weight:600}
+  .tier-lo{color:var(--crit);font-weight:600}
+
+  /* ---------- phase timeline ---------- */
+  .phase{margin:0 0 34px;border-top:1px solid var(--rule);padding-top:18px}
+  .phase-head{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;margin-bottom:6px}
+  .days{
+    font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.04em;
+    background:var(--ink);color:var(--bone);padding:2px 9px;border-radius:2px;white-space:nowrap;
+  }
+  .phase-head h3{margin:0;font-size:19px}
+  .goal{font-size:15px;color:var(--ink-2);margin:0 0 18px;max-width:var(--measure)}
+  .block{margin:0 0 20px;max-width:var(--measure)}
+  .block > h4{margin-top:0;display:flex;align-items:baseline;gap:9px}
+  .block > h4 .when{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);font-weight:500;letter-spacing:.03em}
+  ol.steps{counter-reset:none;list-style:none;margin:0;padding:0}
+  ol.steps li{
+    display:grid;grid-template-columns:2.1rem 1fr;gap:11px;margin-bottom:9px;align-items:baseline;
+  }
+  ol.steps li::before{
+    content:attr(data-n);font-family:var(--mono);font-size:12px;color:var(--ink-3);
+    font-variant-numeric:tabular-nums;text-align:start;padding-top:2px;
+  }
+
+  /* ---------- tomorrow cards ---------- */
+  .today{display:grid;gap:0;border:1px solid var(--rule);border-radius:2px;overflow:hidden;max-width:var(--measure);margin:22px 0}
+  .today .item{padding:15px 18px;border-bottom:1px solid var(--rule-soft);background:var(--bone-2)}
+  .today .item:last-child{border-bottom:0}
+  .today .top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:5px}
+  .today .top b{font-size:16px}
+  .today .cost{font-family:var(--mono);font-size:11.5px;color:var(--ink-3);white-space:nowrap}
+  .today p{margin:0;font-size:15px;color:var(--ink-2);max-width:none}
+  .snippet{
+    display:block;font-family:var(--mono);font-size:12.5px;direction:ltr;text-align:left;
+    background:var(--bone);border:1px solid var(--rule);border-radius:2px;
+    padding:8px 10px;margin:8px 0;overflow-x:auto;white-space:nowrap;
+  }
+
+  /* ---------- do/dont ---------- */
+  .dd{display:grid;gap:14px;max-width:var(--measure);margin:18px 0}
+  @media (min-width:640px){.dd{grid-template-columns:1fr 1fr}}
+  .dd > div{padding:14px 16px;border-radius:2px;border:1px solid var(--rule)}
+  .dd .no{background:var(--crit-soft);border-color:color-mix(in srgb,var(--crit) 25%,transparent)}
+  .dd .yes{background:var(--pine-soft);border-color:color-mix(in srgb,var(--pine) 25%,transparent)}
+  .dd h5{margin:0 0 8px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  .dd .no h5{color:var(--crit)}
+  .dd .yes h5{color:var(--pine)}
+  .dd ul{margin:0;padding-inline-start:18px;font-size:15px}
+  .dd li{margin-bottom:4px}
+
+  /* ---------- closing ---------- */
+  .closing{border-top:2px solid var(--ink);padding-top:26px;margin-top:60px}
+  ol.big{list-style:none;counter-reset:big;padding:0;margin:20px 0 0;max-width:var(--measure)}
+  ol.big li{
+    counter-increment:big;display:grid;grid-template-columns:auto 1fr;gap:16px;
+    padding:14px 0;border-bottom:1px dotted var(--rule);align-items:baseline;
+  }
+  ol.big li::before{
+    content:counter(big);font-family:var(--mono);font-size:30px;font-weight:700;
+    color:var(--amber);line-height:1;
+  }
+  .foot{
+    margin-top:40px;padding-top:18px;border-top:1px solid var(--rule);
+    font-size:13.5px;color:var(--ink-3);max-width:var(--measure);
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .rail a{transition:color .15s ease,border-color .15s ease}
+  }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+
+  <header class="mast">
+    <div class="eyebrow">
+      <span>אבחון עסקי</span><span>·</span>
+      <span>תוספי תזונה</span><span>·</span>
+      <span>אוגוסט 2026</span><span>·</span>
+      <span>מחקר מבוסס 11 סוכני חקירה</span>
+    </div>
+    <h1>איך מביאים עוד לקוחות ל־<span class="handle">@bodyking.m</span></h1>
+    <p class="dek">
+      תוכנית 90 יום לחשבון אינסטגרם שמוכר תוספי תזונה בוואטסאפ. המסקנה המרכזית:
+      הבעיה איננה מספר העוקבים — היא שאף אחד לא יודע כמה כסף נשאר מהזמנה.
+    </p>
+  </header>
+
+  <dl class="vitals">
+    <div class="vital">
+      <dt>עוקבים</dt><dd>90,400</dd>
+      <small>מדד יהירות. לא נכס עד שהוא מייצר שיחות</small>
+    </div>
+    <div class="vital flag">
+      <dt>צפיות ב־30 יום</dt><dd>67,400</dd>
+      <small>0.75 צפיות לעוקב · ~2,247 ליום לכל החשבון</small>
+    </div>
+    <div class="vital">
+      <dt>פוסטים היסטוריים</dt><dd>762</dd>
+      <small>ספרייה גדולה — החשבון היה פעיל מאוד בעבר</small>
+    </div>
+    <div class="vital">
+      <dt>נעקבים</dt><dd>0</dd>
+      <small>חשבון משדר, לא חלק מקהילה מקומית</small>
+    </div>
+    <div class="vital flag">
+      <dt>נכסים דיגיטליים</dt><dd>1</dd>
+      <small>טלפון בלבד. אין <span dir="ltr">wa.me</span>, אין קטלוג, אין רשימת לקוחות</small>
+    </div>
+  </dl>
+
+  <div class="cols">
+    <nav class="rail" aria-label="ניווט בין פרקים">
+      <ol>
+        <li><a href="#s1"><span class="folio">01</span>אבחון</a></li>
+        <li><a href="#s2"><span class="folio">02</span>שלוש החסימות</a></li>
+        <li><a href="#s3"><span class="folio">03</span>תוכנית 90 יום</a></li>
+        <li><a href="#s4"><span class="folio">04</span>מחר בבוקר</a></li>
+        <li><a href="#s5"><span class="folio">05</span>דירוג ערוצים</a></li>
+        <li><a href="#s6"><span class="folio">06</span>מדדים</a></li>
+        <li><a href="#s7"><span class="folio">07</span>סיכונים ורגולציה</a></li>
+      </ol>
+    </nav>
+
+    <main>
+
+      <!-- ================= 01 ================= -->
+      <section id="s1">
+        <div class="shead"><span class="folio">01</span><h2>אבחון — מה באמת קורה בעסק</h2></div>
+
+        <h3>האבחנה שכולם קופצים אליה — ורובה כנראה שגויה</h3>
+        <p>
+          קל להסתכל על 90.4K עוקבים מול 67.4K צפיות ולהכריז "עוקבים מתים או קנויים". אבל מטריקת
+          "צפיות" סופרת בעיקר תוכן שפורסם. לפי בנצ'מרקים של פלטפורמות ניתוח, ריל של חשבון בסדר גודל
+          כזה מגיע בממוצע לכ־6,500 חשבונות. חישוב גס:
+          <strong>67,400 ÷ 6,500 ≈ 8–12 פוסטים בחודש</strong> — כלומר המספרים תואמים בדיוק חשבון
+          פעיל למחצה, לא חשבון עם קהל מת. <span class="chip">הערכה</span>
+        </p>
+
+        <div class="call">
+          <span class="ctag">לפני כל החלטה</span>
+          <p>
+            <strong>אסור להסיק שום דבר לפני שסופרים כמה פוסטים פורסמו ב־30 הימים האחרונים.</strong>
+            זו ספירה של שלוש דקות בגריד. מתחת ל־12 → הבעיה היא תדירות, וזה תיקון קל.
+            מעל 16 והצפיות עדיין 67K → רק אז זו בעיית תוכן או קהל.
+          </p>
+        </div>
+
+        <h3>הכשל האמיתי: אף אחד לא יודע כמה כסף נשאר מהזמנה</h3>
+        <p>
+          זו בעיה חמורה בהרבה מיחס הצפיות. חישוב למוכר משני שקונה מיבואן ישראלי:
+        </p>
+
+        <div class="ledger">
+          <div class="lhead">יחידה כלכלית להזמנה — הערכה</div>
+          <div class="lrow"><span class="lbl">הזמנה ממוצעת</span><span class="fig">250 ₪</span></div>
+          <div class="lrow"><span class="lbl">מרווח גולמי 20–30%</span><span class="fig">50–75 ₪</span></div>
+          <div class="lrow neg"><span class="lbl">משלוח עד הבית</span><span class="fig">−32 עד −90 ₪</span></div>
+          <div class="lrow total"><span class="lbl">רווח אמיתי להזמנה</span><span class="fig">בין הפסד ל־+43 ₪</span></div>
+        </div>
+
+        <p>
+          מחירי שליחויות בישראל <span class="num">2025–26</span>: 45–90 ₪ לחבילה עד 20 ק"ג לפי מרחק,
+          כ־62.9 ₪ בדואר ישראל לעסקים קטנים, ו־32 ₪ רק בנפח של 30–50 משלוחים בחודש ורק במרכז.
+          נקודת איסוף מתחילה ב־22.90 ₪ + מע"מ. אבקות חלבון הן <span class="num">1–5</span> ק"ג —
+          בקצה היקר של כל מחירון. <span class="chip fact">מאומת</span>
+        </p>
+
+        <div class="call crit">
+          <span class="ctag">המסקנה שמכתיבה את כל התוכנית</span>
+          <p>
+            ההמלצות הסטנדרטיות שכל יועץ נותן — 10% הנחה ללקוח, 10–15% עמלה למאמן, משלוח חינם,
+            30–40 ₪ זיכוי הפניה, 8–12% הנחת חבילה, <span dir="ltr">CAC</span> של 32–40 ₪ ממדיה —
+            <strong>כל אחת מהן לבדה גדולה מהרווח הגולמי של העסקה. שתיים ביחד = מכירה בהפסד ודאי.</strong>
+          </p>
+          <p>
+            במבנה העלות הנוכחי, כמעט כל ערוץ רכישה בתשלום מפסיד ברכישה הראשונה.
+            הכול תלוי ברכישה החוזרת ובמחיר הקנייה.
+          </p>
+        </div>
+
+        <h3>עשרת המספרים שחסרים — ובלעדיהם הכול ספקולציה</h3>
+        <p>
+          הזמנות בחודש · הזמנה ממוצעת · מרווח גולמי באחוזים · מי הספק ומה מחיר הקנייה ·
+          סטטוס עוסק (מורשה / פטור / לא רשום) · האם מוציא חשבוניות · כמה שעות ביום פנויות לשיווק ·
+          כמה פניות <span dir="ltr">DM</span> בשבוע · כמה פוסטים ב־30 יום · מיקומי העוקבים (% ישראל).
+        </p>
+      </section>
+
+      <!-- ================= 02 ================= -->
+      <section id="s2">
+        <div class="shead"><span class="folio">02</span><h2>שלוש הבעיות שחוסמות לקוחות</h2></div>
+
+        <h3>1 · היחידה הכלכלית לא ידועה, וצד הרכש לא נבדק מעולם</h3>
+        <p>
+          בלי לדעת מרווח אי אפשר לתמחר קמפיין, עמלה, מבצע או משלוח. גרוע מכך — כל שיפור שיווקי
+          אפשרי קטן משיפור של 5% במחיר הקנייה.
+        </p>
+        <p>
+          שני ערוצי רכש קונקרטיים שקיימים ולא נבדקו: <strong>צ'מפיון ספורט</strong> מפעילה מחירון
+          סיטונאות לבעלי עסקים, חנויות וחדרי כושר. <strong>מעבדות זומר</strong>, חברה ישראלית משנת
+          1966 המייצרת תרכובות אבקה ומוצרים מועשרים בחלבון, מציינת התמחות ב־<span dir="ltr">Private
+          Label</span>. מותג פרטי הוא הדרך היחידה לשבור את תקרת ה־20–30% שבה מוכר משני כלוא — וגם
+          מבטל את השוואת המחירים בזאפ.
+        </p>
+        <p>
+          נלווה לזה: אם הגבייה מתבצעת בביט לחשבון פרטי — <strong>ההצלחה השיווקית תחסום את
+          הגבייה.</strong> ביט פרטי כפוף לתקרות שנתיות; ביט לעסקים דורש חשבון בנק עסקי ומגביל עסקה
+          בודדת ל־5,000 ₪. ואם אין סטטוס עוסק ואין חשבוניות — פרסום ממומן, אימות עסק במטא ומכירה
+          B2B לחדרי כושר חסומים כולם.
+        </p>
+
+        <h3>2 · יש תנועה, אין דרך לקנות</h3>
+        <p>
+          כ־<span class="num">2,200</span> צפיות ביום זורמות לפרופיל שבו הפעולה היחידה האפשרית היא
+          <strong>להעתיק עשר ספרות ידנית</strong>. אין <span dir="ltr">wa.me</span>, אין קטלוג, אין
+          מחירון, אין מדיניות משלוח, אין רשימת לקוחות. כל שיחה מתחילה מ"כמה עולה?" והבעלים הוא צוואר
+          בקבוק אנושי.
+        </p>
+        <div class="call ok">
+          <span class="ctag">הטוב שבחדשות</span>
+          <p>זו הבעיה הכי זולה לתיקון בכל התוכנית — <strong>יום עבודה אחד</strong> — והיא משפרת המרה גם אם שום דבר אחר לא משתנה.</p>
+        </div>
+
+        <h3>3 · קצב פרסום ופורמט: החשבון לא מייצר גילוי</h3>
+        <p>
+          8–12 פוסטים בחודש <span class="chip">הערכה</span>, כנראה בעיקר תמונות מוצר ומחירונים —
+          הפורמט שאינסטגרם כמעט לא מפיצה החוצה. ריל מגיע לפי ~3 חשיפה מפוסט רגיל, וכ־47% מצפיות
+          הריל מגיעות מ־<span dir="ltr">Explore</span>, כלומר מלא־עוקבים.
+        </p>
+        <p>
+          בנוסף: החשבון קיים רק באינסטגרם, בזמן שבחברה הערבית בישראל
+          <strong>וואטסאפ 98%, פייסבוק 93% (72% יומי), טיקטוק 71% (61% יומי), יוטיוב 100%</strong> —
+          סקר איגוד האינטרנט הישראלי 2025. <span class="chip fact">מאומת</span>
+        </p>
+      </section>
+
+      <!-- ================= 03 ================= -->
+      <section id="s3">
+        <div class="shead"><span class="folio">03</span><h2>תוכנית 90 יום</h2></div>
+
+        <!-- PHASE A -->
+        <div class="phase">
+          <div class="phase-head">
+            <span class="days">ימים 1–14</span>
+            <h3>שלב א' · מדידה, יסודות, וסתימת החור</h3>
+          </div>
+          <p class="goal">מטרה: לדעת מה קורה ולהסיר חיכוך. <strong>אפס שקל על מדיה בשלב הזה.</strong></p>
+
+          <div class="block">
+            <h4>מדידה <span class="when">יום 1 · שעה אחת</span></h4>
+            <ol class="steps">
+              <li data-n="01"><span><span dir="ltr">Professional Dashboard</span> ← תובנות ← 30 יום. לתעד ארבעה מספרים: כמה פוסטים פורסמו · % צפיות מלא־עוקבים · חמש הערים המובילות · גרף גדילת עוקבים (לחפש קפיצות של אלפים ביום בלי פוסט ויראלי).</span></li>
+              <li data-n="02"><span>הגדרות ← עזרה ותמיכה ← <strong><span dir="ltr">Account Status</span></strong>. לבדוק אם רשומה הפרה או "התוכן שלך פחות מומלץ". סימן מזהה לדיכוי: צניחה חדה בתאריך מסוים, לא ירידה הדרגתית.</span></li>
+              <li data-n="03"><span>להפעיל <strong><span dir="ltr">2FA</span></strong>. החשבון הוא הנכס היחיד ואין לו גיבוי.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>יוניט אקונומיקס <span class="when">ימים 1–3</span></h4>
+            <ol class="steps">
+              <li data-n="04"><span>גיליון אחד: 20 המק"טים הנמכרים ביותר ← מחיר קנייה, מחיר מכירה, מרווח בשקלים ובאחוזים. <strong>מוצר עם מרווח מתחת ל־40 ₪ לא יכול להשתתף בשום מבצע.</strong></span></li>
+              <li data-n="05"><span>שתי שיחות טלפון: לצ'מפיון ספורט ולעוד שני סיטונאים — מחירון, מינימום הזמנה, מה נדרש. ולמעבדות זומר — הצעת מחיר למותג פרטי על מוצר אחד בלבד (קריאטין מונוהידראט, הזול והפשוט לייצור). לא להתחייב — לאסוף מספרים.</span></li>
+              <li data-n="06"><span>שיחה לחברת שליחויות: מחיר קבוע לפי נפח חודשי, ומחיר לנקודת איסוף.</span></li>
+              <li data-n="07"><span><strong>לבדוק כמה נגבה השנה בביט הפרטי.</strong> אם מתקרב לתקרה — זה הפריט הדחוף ביותר במסמך.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>סתימת החיכוך <span class="when">ימים 3–5 · יום עבודה אחד</span></h4>
+            <ol class="steps">
+              <li data-n="08"><span>לינק <span dir="ltr">wa.me</span> בביו עם הודעה מוכנה. אינסטגרם מאפשר עד חמישה קישורים בביו.</span></li>
+              <li data-n="09"><span><strong>שדה השם</strong> — "☆BODY KING☆" לא מכיל אף מילת מפתח, והכוכביות מזיקות אקטיבית. לשנות ל־<code dir="ltr">BODY KING | مكملات غذائية | תוספי תזונה</code>. שדה השם הוא המשוקלל ביותר בחיפוש הפנימי. להוסיף עיר/אזור לביו.</span></li>
+              <li data-n="10"><span><span dir="ltr">WhatsApp Business</span> + קטלוג: 20–30 מק"טים מובילים עם תמונה, מחיר, גודל אריזה וטעמים, ב־4–6 קולקציות.</span></li>
+              <li data-n="11"><span>עשר <strong>תשובות מהירות</strong>: מחירון · זמני משלוח · אפשרויות מסירה · אמצעי תשלום · המלצה לפי מטרה · מקוריות ויבואן · מרכיבים · החזרות.</span></li>
+              <li data-n="12"><span>חמש <strong>תוויות</strong>: פנייה חדשה / ממתין לתשלום / הזמנה בוצעה / לקוח חוזר / לא סגר.</span></li>
+              <li data-n="13"><span>הודעת ברכה אוטומטית + הודעת היעדרות.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>רשימת לקוחות <span class="when">ימים 5–7</span></h4>
+            <ol class="steps">
+              <li data-n="14"><span>גיליון: שם / טלפון / תאריך / מוצר / גודל / סכום / הסכמה לדיוור / הופנה ע"י / <strong>תאריך תזכורת</strong> (מחושב אוטומטית). מילוי רטרואקטיבי של שלושה חודשים אחורה מהיסטוריית הוואטסאפ — כמה שעות, ומייצר מיד מאות שמות.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>מקור הסחורה <span class="when">ימים 7–10 · קריטי לפני כל הגדלת חשיפה</span></h4>
+            <ol class="steps">
+              <li data-n="15"><span>לעבור על הקטלוג ולסמן כל מוצר: <strong>"יש יבואן ישראלי + מדבקה בעברית"</strong> או <strong>"אין"</strong>. תקנות "יבואן נאות" תשפ"ה־2025 נכנסו לתוקף, ומאוגוסט 2025 פועל פורטל דיגיטלי של משרד הבריאות.</span></li>
+              <li data-n="16"><span>להפסיק לפרסם פומבית מוצרים מהקבוצה השנייה. <strong>אסור להגדיל חשיפה ופרסום ממומן על קטלוג שחלקו אפור</strong> — פרסום מגדיל את הנראות מול הרגולטור ומול מתחרים בדיוק במקום שבו יש חשיפה.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>ביקורת מתחרים <span class="when">ימים 10–12 · שעה אחת בדיוק</span></h4>
+            <ol class="steps">
+              <li data-n="17"><span>8–10 חשבונות שמוכרים תוספים בערבית באזור. שש עמודות בלבד: מחיר של מק"ט זהה · עלות משלוח · זמן אספקה מובטח · <strong>זמן תגובה בפועל ב־DM</strong> (לשלוח הודעה ולתזמן) · אמצעי תשלום · האם מוזכר חלאל/יבואן.</span></li>
+              <li data-n="18"><span>שים לב: חשבונות בסדר גודל 38–83 אלף עוקבים הם <strong>הנורמה בקטגוריה, לא החריג</strong>. 90.4K אינם יתרון תחרותי, והמיצוב "החנות מספר 1" לא ניתן להגנה. הבידול חייב להיות במשהו אחר.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>תיקון תוכן משפטי <span class="when">ימים 12–14</span></h4>
+            <ol class="steps">
+              <li data-n="19"><span>לא לעבור על 762 פוסטים — <span dir="ltr">ROI</span> אפסי. <strong>רק</strong>: הביו, הפוסטים המוצמדים, 30 הפוסטים האחרונים, ותסריטי ה־DM מכאן והלאה. למחוק כל טענה רפואית והבטחת תוצאה.</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- PHASE B -->
+        <div class="phase">
+          <div class="phase-head">
+            <span class="days">ימים 15–45</span>
+            <h3>שלב ב' · ערוצים בעלות אפס, וקצב תוכן</h3>
+          </div>
+          <p class="goal">מטרה: לייצר לקוחות בערוצים שלא שורפים מרווח, ולהתחיל למדוד.</p>
+
+          <div class="block">
+            <h4>מסירה — לבטל "משלוח חינם" <span class="when">ימים 15–18</span></h4>
+            <ol class="steps">
+              <li data-n="20"><span>שלוש אפשרויות מוצהרות: <strong>איסוף עצמי — חינם</strong> · <strong>נקודת איסוף — 15–20 ₪</strong> · <strong>משלוח עד הבית — 35–45 ₪</strong>. או חינם מעל סף שנקבע לפי הרווח הגולמי בפועל — <strong>לא מתחת ל־400 ₪</strong>. <span class="chip">הערכה</span></span></li>
+              <li data-n="21"><span>היילייט קבוע: משלוחים, מחירים, זמנים, אמצעי תשלום.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>חדרי כושר כנקודות איסוף <span class="when">ימים 18–30 · המהלך החזק בשלב</span></h4>
+            <ol class="steps">
+              <li data-n="22"><span>לגשת ל־<strong>שלושה חדרי כושר</strong> ביישובים המרכזיים עם הצעה של דף אחד: <em>"הלקוח מזמין אצלי בוואטסאפ ואוסף אצלך. אתה מקבל 5–10 ₪ קבוע לכל חבילה שנאספת. אפס מלאי, אפס סיכון, ואני מפרסם אותך בסטוריז."</em></span></li>
+              <li data-n="23"><span><strong>תגמול קבוע בשקלים, לא באחוזים.</strong> עמלה של 10–15% גדולה מהרווח הגולמי. 5–10 ₪ קבוע לא.</span></li>
+              <li data-n="24"><span>זה פותר שלושה דברים במכה: עלות המשלוח יורדת לאפס, נוצרת נוכחות פיזית בקהל שחושש מזיופים, והלקוח נכנס למכון — כלומר לבעל המכון יש אינטרס אמיתי.</span></li>
+              <li data-n="25"><span>רק אצל מי שהאיסוף עובד — להוסיף מדף קונסיגנציה קטן (5–8 מק"טים).</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>רכישה חוזרת <span class="when">ימים 20–45 · הערוץ הרווחי ביותר שקיים</span></h4>
+            <ol class="steps">
+              <li data-n="26"><span>עמודת "תאריך תזכורת" בגיליון: <strong>חלבון 1 ק"ג ← +24 יום</strong> (1000 ג' ÷ 30 ג' = 33 מנות, תזכורת ב־70–75% מהחלון) · <strong>קריאטין 300 ג' ← +45 יום</strong> · <strong>גיינר 3 ק"ג ← +21 יום</strong>.</span></li>
+              <li data-n="27"><span>כל בוקר, עשר דקות: לסרוק את הרשימה ולשלוח 5–15 הודעות <strong>אישיות</strong> — לא תפוצה, לא תבנית: <em>"לפי החשבון שלי החלבון שלך אמור להיגמר בסוף השבוע — לשמור לך אחד?"</em></span></li>
+              <li data-n="28"><span>עלות רכישה אפס. בעסק שבו הרכישה הראשונה כמעט תמיד בהפסד — <strong>זה הערוץ היחיד שהופך את המודל לרווחי.</strong></span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>ערוצים שאינם תלויים באלגוריתם <span class="when">ימים 20–25</span></h4>
+            <ol class="steps">
+              <li data-n="29"><span><strong><span dir="ltr">WhatsApp Channel</span></strong> בשם העסק. חד־כיווני, חינמי, ללא תקרת עוקבים (מול 256 ברשימת תפוצה), וההצטרפות היא פעולה יזומה של המשתמש — כלומר הסכמה. לינק בביו, 2–3 פרסומים בשבוע.</span></li>
+              <li data-n="30"><span><strong>להפסיק לחלוטין דיוור לרשימות תפוצה.</strong> זו הסיבה מספר 1 לחסימת מספרי וואטסאפ, והמספר הוא נקודת כשל יחידה של כל העסק.</span></li>
+              <li data-n="31"><span><strong>ערוץ טלגרם</strong> — העתק־הדבק של אותו תוכן, אפס עבודה נוספת. ~71% חדירה בחברה הערבית, אין אלגוריתם שמסתיר, אין הגבלה על לינקים ומחירונים. יעד ריאלי: 500–1,500 מנויים בחצי שנה. <span class="chip">הערכה</span></span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>Google Business Profile <span class="when">יום 25</span></h4>
+            <ol class="steps">
+              <li data-n="32"><span>לפתוח כ־<strong><span dir="ltr">Service Area Business</span></strong> — עסק ללא חזית חנות שנוסע ללקוחות; הכתובת מוסתרת מהציבור ונשמרת רק לאימות. תנאי סף: אינטראקציה פיזית עם לקוחות — מסירת משלוחים ואיסוף עצמי עונים על זה.</span></li>
+              <li data-n="33"><span>אזור שירות = היישובים שאליהם באמת מגיע משלוח. שם וקטגוריה בערבית ובעברית, לינק ישיר לוואטסאפ. מאמצע 2026 אימות בווידאו הוא ברירת המחדל.</span></li>
+              <li data-n="34"><span>אחרי כל הזמנה — לבקש ביקורת בערבית. <strong>יעד: 20 ביקורות ב־90 יום.</strong></span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>קצב תוכן <span class="when">מיום 15 · קבוע</span></h4>
+            <ol class="steps">
+              <li data-n="35"><span><strong>3–4 רילס בשבוע, 30–60 שניות</strong> (טווח החשיפה הגבוה ביותר). יום צילום אחד בשבוע = כל התוכן לשבוע.</span></li>
+              <li data-n="36"><span>מקור תוכן מיידי: 30 הפוסטים הישנים עם הכי הרבה לייקים ← כל אחד הופך לריל אנכי.</span></li>
+              <li data-n="37"><span>מבנה קבוע: 3 שניות וו ← 20–45 שניות ערך ← קריאה לפעולה אחת.</span></li>
+              <li data-n="38"><span><strong>סוגי תוכן שעובדים כאן ספציפית:</strong> (א) סרטון 20 שניות שמסובב את הפחית ומראה את <strong>מדבקת היבואן בעברית</strong> — התוכן היחיד שאף מתחרה אפור לא יכול לחקות; (ב) שקיפות מרכיבים; (ג) "3 שאלות שאני שואל לפני שאני ממליץ על חלבון"; (ד) פתיחת משלוח.</span></li>
+              <li data-n="39"><span><strong>לשקף כל ריל לטיקטוק, לפייסבוק ריל וליוטיוב שורטס באותו יום</strong> — אותו קובץ, ייצוא מהמקור בלי סימן מים. אפס עבודה נוספת. שים לב: <span dir="ltr">TikTok Shop</span> אינו פעיל בישראל — טיקטוק הוא ערוץ תנועה בלבד.</span></li>
+              <li data-n="40"><span>להפסיק לפרסם מחירונים כפוסט בפיד. מחירים עוברים לקטלוג, לסטוריז ולתשובות מהירות.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>לתקן את ה"0 נעקבים" <span class="when">מיום 15 · 15 דקות ביום</span></h4>
+            <ol class="steps">
+              <li data-n="41"><span>לעקוב אחרי 100–150 חשבונות: כל חדר כושר, סטודיו ומאמן ברדיוס המשלוחים, ולקוחות שקנו. שגרה יומית: תגובה אמיתית — לא אמוג'י, לא לינק — על עשרה פוסטים של מאמנים מקומיים.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>חלאל — הבידול האמיתי <span class="when">ימים 30–45</span></h4>
+            <ol class="steps">
+              <li data-n="42"><span><strong>לא להצהיר "חלאל" גורף.</strong> במקום זה — כרטיס מרכיבים קצר בערבית לכל מק"ט מוביל, שעונה על שלוש שאלות: <strong>סוג הקפסולה</strong> (רוב הג'לטין הפרמצבטי ממקור חזירי; בטוחים: <span dir="ltr">HPMC, hypromellose, vegetable capsule, pullulan</span>) · <strong>מקור המיצוי</strong> (ווי פרוטאין הוא חלאל כשהמיצוי מיקרוביאלי) · <strong>אלכוהול בטעמים</strong>.</span></li>
+              <li data-n="43"><span>לפנות ליבואן ולבקש את המידע <strong>בכתב</strong>. להעדיף במלאי מוצרים עם הסמכה אמיתית (<span dir="ltr">IFANCA, HFA, JAKIM, HMC</span>) ולציין את שם הגוף המסמיך.</span></li>
+              <li data-n="44"><span>היילייט אחד בשם <strong dir="rtl">"مكونات"</strong>. זה נכס בידול שאף מתחרה ישראלי לא בנה.</span></li>
+              <li data-n="45"><span><strong>אזהרה:</strong> הצהרת חלאל שקרית או לא מגובה בקהל הזה הרסנית יותר מאי־אזכור הנושא בכלל — היא הופכת את ה"אמינות" שהעסק משווק לעצמו לנשק נגדו.</span></li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- PHASE C -->
+        <div class="phase">
+          <div class="phase-head">
+            <span class="days">ימים 46–90</span>
+            <h3>שלב ג' · מדיה בתשלום מבוקרת, ושימור</h3>
+          </div>
+          <p class="goal">מטרה: להריץ מדיה רק אחרי שיודעים את המרווח, ולבנות רכישה חוזרת.</p>
+
+          <div class="call crit">
+            <span class="ctag">תנאי כניסה למדיה — אל תדלג</span>
+            <p>
+              <strong>אין קמפיין לפני שארבעת אלה קיימים:</strong> (א) סטטוס עוסק מוסדר + חשבוניות ·
+              (ב) גבייה עסקית מוסדרת (ביט לעסקים או סליקה) · (ג) מרווח גולמי ידוע לכל מק"ט ·
+              (ד) קטלוג נקי מסחורה ללא יבואן.
+            </p>
+          </div>
+
+          <div class="block">
+            <h4>CTWA — ערוץ המדיה היחיד <span class="when">ימים 46–60</span></h4>
+            <ol class="steps">
+              <li data-n="47"><span>קמפיין מטא במטרת <strong><span dir="ltr">Messages → WhatsApp</span></strong>. לא תנועה לפרופיל, לא לאתר.</span></li>
+              <li data-n="48"><span><strong>טירגוט: גיאוגרפיה + גיל 18–40. וזהו.</strong> אל תפלח לפי "שפה: ערבית" — הפילוח מבוסס שפת ממשק, וחלק ניכר מהמשתמשים הערבים בישראל מחזיקים ממשק בעברית. בנוסף, מטא הסירה קטגוריות טירגוט מפורט ב־15.1.2026, ומפברואר 2026 בחירות עניין מטופלות כ"הצעה" בלבד עם <span dir="ltr">Advantage+</span> כברירת מחדל. <strong>הקריאייטיב הוא מנגנון הטירגוט</strong> — ערבית מדוברת מקומית בשלוש השניות הראשונות עושה את הסינון.</span></li>
+              <li data-n="49"><span><strong>קמפיין אחד, קבוצת מודעות אחת, 3–4 סרטונים בתוכה.</strong> לא לפצל תקציב. 30–60 ₪ ליום, 30 יום ≈ 1,000–1,800 ₪. לא לגעת 4–5 ימים ראשונים. להעלות ב־20% כל 3–4 ימים רק אחרי שהעלות לשיחה יציבה.</span></li>
+              <li data-n="50"><span><strong>תסריט 72 השעות:</strong> מ־1.7.2025 מטא מחייבת לפי הודעה, אבל שיחה שנפתחה ממודעת <span dir="ltr">CTWA</span> מקבלת חלון חינמי של 72 שעות לכל קטגוריות ההודעות. לכן: מענה מיידי ← שתי שאלות סינון (מטרה, ותק) ← הצעה עם מחיר ← תזכורת אחת ביום 2 ← סגירה. <strong>מי שלא סגר תוך 72 שעות עובר למעקב ידני, לא להודעה יזומה בתשלום.</strong></span></li>
+              <li data-n="51"><span><strong>המדד היחיד שקובע:</strong> עלות לשיחה × (1 ÷ אחוז ההמרה) מול הרווח הגולמי להזמנה. אם <span dir="ltr">CAC</span> גדול מהרווח הגולמי — הקמפיין רווחי <strong>רק</strong> אם הרכישה החוזרת עובדת. לכן שלב ב' חייב להיות פעיל לפני שלב ג'.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>רימרקטינג <span class="when">ימים 46–50</span></h4>
+            <ol class="steps">
+              <li data-n="52"><span>שלושה <span dir="ltr">Custom Audiences</span>: מתקשרים עם חשבון האינסטגרם 365 יום · צופי וידאו 50%+ ב־180 יום · העלאת רשימת טלפוני לקוחות. <span dir="ltr">Lookalike</span> רק מ־100 רשומות ומעלה — כלומר אפשרי רק אחרי שהגיליון מלא.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>חבילות ומרווח <span class="when">ימים 50–65</span></h4>
+            <ol class="steps">
+              <li data-n="53"><span>שלוש חבילות עם שם ומחיר סגור: <strong>מתחיל</strong> (חלבון + שייקר) · <strong>מסה</strong> (גיינר + קריאטין) · <strong>חיטוב</strong> (איזולט + פרה־וורקאאוט). הנחה <strong>8–12% מהמחיר המצטבר בלבד</strong> — מספיק להצדיק, לא מספיק לשחוק.</span></li>
+              <li data-n="54"><span>אפסייל בסוף שיחה: <em>"תוסיף שייקר ב־20 ₪?"</em> — ההחלטה כבר התקבלה, וזה מרווח כמעט נקי.</span></li>
+              <li data-n="55"><span><strong>קריאטין מונוהידראט 300 ג' כמוצר פתיחה:</strong> מחיר כניסה נמוך (שוק: אלפא ~69 ₪ מול אופטימום ~169 ₪ — פי 2.5 על אותה מולקולה), שולי רווח סבירים, ומכניס לקוח למאגר.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>הפניות <span class="when">ימים 60–75</span></h4>
+            <ol class="steps">
+              <li data-n="56"><span>תוכנית דו־צדדית <strong>בסכום קבוע, לא באחוזים</strong>: החבר החדש מקבל 20 ₪ הנחה, המפנה מקבל 20 ₪ זיכוי. לכייל כך שסכום שני הצדדים לא יעלה על ~50% מהרווח הגולמי. <span class="chip">הערכה</span></span></li>
+              <li data-n="57"><span>לשלוח את ההצעה <strong>ארבעה ימים אחרי המשלוח</strong>, כשהלקוח מרוצה. ציפייה ריאלית: שיעור הפניה בריא הוא 1–3% — כלומר מ־200 לקוחות פעילים, 4–10 הפניות בחודש. לא מאות.</span></li>
+            </ol>
+          </div>
+
+          <div class="block">
+            <h4>רכש והיערכות עונתית <span class="when">ימים 75–90</span></h4>
+            <ol class="steps">
+              <li data-n="58"><span>לחזור למספרי הרכש ולהחליט: מעבר לסיטונאי טוב יותר, או פיילוט מותג פרטי על מוצר אחד. <strong>שיפור של 5% במחיר הקנייה שווה יותר מכל האוטומציות במסמך הזה יחד.</strong></span></li>
+              <li data-n="59"><span>רמדאן הבא הוא בסביבות <strong>פברואר 2027</strong> — יש חצי שנה, לא חודש. <strong>הנימוק המקובל ("40% יותר צריכה") מבוסס על כתבה מ־2014 על מזון, חשמל ובגדים — לא על תוספים.</strong> סביר לא פחות שבצום פעילות חדר הכושר יורדת וצריכת אבקות דווקא נחלשת, עם קפיצה לפני החודש ואחריו (עיד). לתכנן קמפיין לחלונות האלה, לא לאמצע החודש.</span></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 04 ================= -->
+      <section id="s4">
+        <div class="shead"><span class="folio">04</span><h2>מה לעשות מחר בבוקר</h2></div>
+        <p>חמש פעולות, 24 שעות, אפס שקלים.</p>
+
+        <div class="today">
+          <div class="item">
+            <div class="top"><b>1 · להחליף את הלינק בביו</b><span class="cost">10 דקות</span></div>
+            <span class="snippet">https://wa.me/972523019976?text=أهلاً،%20بدي%20استشارة%20عن%20المكملات</span>
+            <p>ולשנות את שדה השם ל־<code dir="ltr">BODY KING | مكملات غذائية | תוספי תזונה</code>. הכוכביות מזיקות אקטיבית לחיפוש הפנימי.</p>
+          </div>
+          <div class="item">
+            <div class="top"><b>2 · לספור פוסטים ולפתוח את הדשבורד</b><span class="cost">20 דקות</span></div>
+            <p>כמה פוסטים ב־30 יום · % צפיות מלא־עוקבים · חמש הערים המובילות · <span dir="ltr">Account Status</span>. <strong>המספר הראשון קובע את כל האסטרטגיה</strong> — מתחת ל־12 = הבעיה תדירות, לא קהל.</p>
+          </div>
+          <div class="item">
+            <div class="top"><b>3 · לפתוח את גיליון הלקוחות</b><span class="cost">2–3 שעות</span></div>
+            <p>שם / טלפון / תאריך / מוצר / גודל / סכום / הסכמה / תאריך תזכורת, שלושה חודשים אחורה. זה הנכס האמיתי של העסק והוא כרגע מפוזר בשיחות. בלעדיו אי אפשר לבצע אף אחת מההמלצות האחרות.</p>
+          </div>
+          <div class="item">
+            <div class="top"><b>4 · קטלוג ב-WhatsApp Business</b><span class="cost">שעתיים</span></div>
+            <p>20 מק"טים עם מחירים + הודעת ברכה אוטומטית + 10 תשובות מהירות + 5 תוויות. חינם לגמרי.</p>
+          </div>
+          <div class="item">
+            <div class="top"><b>5 · שתי שיחות טלפון</b><span class="cost">30 דקות</span></div>
+            <p>לצ'מפיון ספורט — מחירון סיטונאי ומינימום הזמנה. לחברת שליחויות — מחיר קבוע לפי נפח ומחיר לנקודת איסוף. <strong>שתי השיחות האלה ישפיעו על הרווח יותר מכל פוסט שיפורסם החודש.</strong></p>
+          </div>
+          <div class="item">
+            <div class="top"><b>בונוס · להפעיל 2FA על החשבון</b><span class="cost">דקה אחת</span></div>
+            <p>90 אלף עוקבים בלי אימות דו־שלבי הם יעד. אין גיבוי לחשבון הזה.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 05 ================= -->
+      <section id="s5">
+        <div class="shead"><span class="folio">05</span><h2>ערוצי רכישה מדורגים לפי ROI</h2></div>
+
+        <div class="tw">
+          <table>
+            <thead>
+              <tr><th>#</th><th>ערוץ</th><th>עלות משוערת</th><th>ROI צפוי</th><th>הערה</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="rank">01</td><td><strong>תזכורות חידוש ללקוחות קיימים</strong></td><td class="r">0 ₪ · 10 דק'/יום</td><td class="tier-hi">הגבוה ביותר</td><td>מכירה ללקוח קיים מצליחה ב־60–70% מול 5–20% ללקוח חדש</td></tr>
+              <tr><td class="rank">02</td><td><strong>תיקון החיכוך</strong> (wa.me + קטלוג + מחירון)</td><td class="r">0 ₪ · יום עבודה</td><td class="tier-hi">גבוה מאוד</td><td>משפר המרה מהתנועה הקיימת (~2,200 צפיות/יום) בלי להוסיף תנועה</td></tr>
+              <tr><td class="rank">03</td><td><strong>חדרי כושר כנקודות איסוף + מאמנים</strong></td><td class="r">5–10 ₪ לעסקה</td><td class="tier-hi">גבוה</td><td>עלות משתנה בלבד, אפס עלות משלוח, נוכחות פיזית</td></tr>
+              <tr><td class="rank">04</td><td><strong>Google Business Profile</strong></td><td class="r">0 ₪</td><td class="tier-hi">גבוה</td><td>חינמי לחלוטין; ביקורות בערבית = הוכחה שאי אפשר לזייף</td></tr>
+              <tr><td class="rank">05</td><td><strong>רילס 3–4/שבוע + שכפול ל־4 פלטפורמות</strong></td><td class="r">0 ₪ · ~6 שעות/שבוע</td><td class="tier-hi">גבוה</td><td>~47% מצפיות הריל מ־Explore = לא־עוקבים</td></tr>
+              <tr><td class="rank">06</td><td><strong>WhatsApp Channel + טלגרם</strong></td><td class="r">0 ₪</td><td class="tier-md">בינוני–גבוה</td><td>שימור והפצה, לא גילוי. קהל בבעלותך ולא של מטא</td></tr>
+              <tr><td class="rank">07</td><td><strong>CTWA (מטא)</strong></td><td class="r">30–60 ₪/יום ≈ 1,000–1,800 ₪/חודש</td><td class="tier-md">תלוי לגמרי במרווח</td><td>לא לפני שהמרווח ידוע ושלב ב' פועל</td></tr>
+              <tr><td class="rank">08</td><td><strong>תוכנית הפניה</strong></td><td class="r">20+20 ₪ לעסקה</td><td class="tier-md">בינוני</td><td>ציפייה ריאלית: 4–10 הפניות בחודש מ־200 לקוחות</td></tr>
+              <tr><td class="rank">09</td><td><strong>סידינג למיקרו־משפיענים</strong></td><td class="r">300–600 ₪/חודש</td><td class="tier-md">בינוני, לא מדיד</td><td>רק אחרי שהמכניקה בוואטסאפ עובדת. קוד קופון אישי חובה, אחרת אין ייחוס</td></tr>
+              <tr><td class="rank">10</td><td><strong>טיקטוק ממומן</strong></td><td class="r">70–100 ₪/יום</td><td class="tier-md">לא ידוע</td><td>רק אחרי שהוכח במטא. אין TikTok Shop בישראל</td></tr>
+              <tr><td class="rank">11</td><td><strong>פאנט / בוקרא / רדיו א־שמס</strong></td><td class="r">3,000 ₪+</td><td class="tier-lo">נמוך בשלב הזה</td><td>אין ייחוס, אין כוונת רכישה, מינימום התחייבות. לא בשלושת החודשים הראשונים</td></tr>
+              <tr><td class="rank">12</td><td><strong>חנות אונליין / Shopify</strong></td><td class="r">29$+/חודש + סליקה</td><td class="tier-lo">שלילי כרגע</td><td>סגירה בצ'אט ממירה טוב יותר בקטגוריה שנשענת על ייעוץ. לשקול רק אם זמן התגובה עולה על שעה</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="ledger">
+          <div class="lhead">חישוב הסף לערוץ בתשלום — חובה לפני כל שקל מדיה</div>
+          <div class="lrow"><span class="lbl">רווח גולמי להזמנה − עלות מסירה</span><span class="fig">= X</span></div>
+          <div class="lrow"><span class="lbl">CAC מותר ברכישה ראשונה (רווח מיידי)</span><span class="fig">≤ X</span></div>
+          <div class="lrow"><span class="lbl">CAC מותר אם הרכישה החוזרת מדודה</span><span class="fig">≤ X × 2.5</span></div>
+          <div class="lrow total"><span class="lbl">אם לא ידוע כמה לקוחות חוזרים</span><span class="fig">השורה הראשונה בלבד</span></div>
+        </div>
+      </section>
+
+      <!-- ================= 06 ================= -->
+      <section id="s6">
+        <div class="shead"><span class="folio">06</span><h2>מדדים למעקב</h2></div>
+
+        <h3>גיליון שבועי — שמונה עמודות, כל יום ראשון, עשר דקות</h3>
+        <div class="tw">
+          <table>
+            <thead><tr><th>עמודה</th><th>מקור הנתון</th></tr></thead>
+            <tbody>
+              <tr><td>צפיות ב־7 ימים</td><td>Professional Dashboard</td></tr>
+              <tr><td>מספר פוסטים שפורסמו</td><td>ספירה ידנית</td></tr>
+              <tr><td>ביקורים בפרופיל</td><td>Dashboard</td></tr>
+              <tr><td>שיחות וואטסאפ שנפתחו</td><td>תוויות ב־WhatsApp Business</td></tr>
+              <tr><td>הצעות מחיר שנשלחו</td><td>תוויות</td></tr>
+              <tr><td>הזמנות ששולמו</td><td>תוויות</td></tr>
+              <tr><td><strong>סה"כ הכנסות</strong></td><td>גיליון לקוחות</td></tr>
+              <tr><td><strong>סה"כ רווח גולמי</strong></td><td>גיליון לקוחות פחות עלות סחורה ומסירה</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>שני היחסים היחידים שמשנים</h3>
+        <ul>
+          <li><strong>שיחות ÷ צפיות</strong> — איכות ההצעה והקריאה לפעולה. נמוך ← הבעיה בתוכן ובהצעה.</li>
+          <li><strong>הזמנות ÷ שיחות</strong> — איכות הסגירה. נמוך ← הבעיה במחיר, בזמן התגובה או בתסריט.</li>
+        </ul>
+
+        <div class="dd">
+          <div class="yes">
+            <h5>למדוד</h5>
+            <ul>
+              <li><span dir="ltr">Sends</span>/שיתופים בריל — האות החזק ביותר באלגוריתם 2026, הרבה מעל לייקים</li>
+              <li>% צפיות מלא־עוקבים</li>
+              <li>זמן תגובה ממוצע ב־DM</li>
+              <li>שיעור רכישה חוזרת ב־90 יום</li>
+              <li><strong>רווח גולמי לחודש</strong></li>
+              <li>CAC לפי ערוץ</li>
+            </ul>
+          </div>
+          <div class="no">
+            <h5>להוריד מהלוח</h5>
+            <ul>
+              <li><strong>מספר עוקבים.</strong> אינסטגרם מנקה חשבונות לא־פעילים באופן שוטף (גל גדול במאי 2026) והצהירה שירידה כזו לא פוגעת בהגעה</li>
+              <li><strong>כל רכישת עוקבים או שירותי "קידום"</strong> — להפסיק לחלוטין</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="call ok">
+          <span class="ctag">טריק מדידה בעלות אפס</span>
+          <p>
+            <strong>טקסט מוכן שונה בכל לינק <span dir="ltr">wa.me</span> לפי מקור</strong> — ביו /
+            סטורי / טיקטוק / מודעה / קוד מאמן. כל שיחה נכנסת מסומנת במקור שלה בלי שום כלי אנליטיקס.
+          </p>
+        </div>
+      </section>
+
+      <!-- ================= 07 ================= -->
+      <section id="s7">
+        <div class="shead"><span class="folio">07</span><h2>סיכונים ורגולציה — מה אסור</h2></div>
+
+        <h3>אסור משפטית</h3>
+
+        <h4>1 · לייחס סגולות ריפוי או חיזוק הגוף</h4>
+        <p>
+          סעיף 13 לחוק הגנה על בריאות הציבור (מזון) תשע"ו־2015 אוסר לייחס למזון או לתוסף —
+          <strong>בסימון או בפרסום</strong> — סגולה של חיזוק, ריפוי או מניעת מחלה. העונש: עד שנת
+          מאסר או קנס כפול, וכפול מכך לתאגיד. בית המשפט העליון אישר תובענה ייצוגית בהיקף של
+          כמיליארד ₪ בענף (טעם טבע אלטמן / מגה גלופלקס), וקבע שעצם ייחוס הסגולה מהווה הטעיה —
+          <strong>בלי קשר לשאלה אם המוצר אכן פועל כך.</strong>
+        </p>
+
+        <div class="dd">
+          <div class="no">
+            <h5>אסור לכתוב</h5>
+            <ul>
+              <li>"מחזק חסינות"</li>
+              <li>"פותר עייפות"</li>
+              <li>"מרפא כאבי מפרקים"</li>
+              <li>"תוך שבועיים תראה תוצאות"</li>
+            </ul>
+          </div>
+          <div class="yes">
+            <h5>מותר לכתוב</h5>
+            <ul>
+              <li>"24 גרם חלבון למנה"</li>
+              <li>"5 גרם קריאטין מונוהידראט"</li>
+              <li>"טעם שוקולד"</li>
+              <li>"מתי לוקחים"</li>
+            </ul>
+          </div>
+        </div>
+        <p><strong>תשובה ב־DM היא גם פרסום.</strong> לבנות "מילון מותר/אסור" של 20 שורות לכל מי שעונה.</p>
+
+        <h4>2 · למכור סחורה שיובאה ביבוא אישי</h4>
+        <p>
+          יבוא אישי מוגבל ל־5 ק"ג ועד 15 פריטים (לא יותר מ־5 מאותו תוסף) ומיועד לצריכה עצמית בלבד.
+          מכירה שלו בישראל אינה חוקית. <strong>ולכן אסור להגדיל חשיפה ופרסום ממומן על קטלוג שחלקו
+          אפור</strong> — פרסום מגדיל את הנראות מול הרגולטור ומול מתחרים בדיוק במקום שבו יש חשיפה.
+        </p>
+
+        <h4>3 · לשלוח דבר פרסומת בלי הסכמה מפורשת מראש</h4>
+        <p>
+          סעיף 30א לחוק התקשורת — פיצוי של <strong>עד 1,000 ₪ להודעה</strong> ללא הוכחת נזק, בתביעות
+          קטנות שלקוח מגיש בעצמו. 20 הודעות = חשיפה של עשרות אלפי שקלים. קיים חריג בסעיף 30א(ג)
+          ללקוח שמסר פרטים ברכישה, קיבל אפשרות לסרב, והפרסומת נוגעת למוצר מסוג דומה.
+          <strong>הפתרון הבטוח: <span dir="ltr">WhatsApp Channel</span> בהצטרפות יזומה, לא רשימות
+          תפוצה.</strong> בכל הודעה שיווקית לצרף שורת הסרה.
+        </p>
+
+        <h4>4 · חובת גילוי במכר מרחוק</h4>
+        <p>
+          מכירה בוואטסאפ היא "עסקת מכר מרחוק": חובה למסור שם עוסק וח.פ/ע.מ, כתובת, תיאור המוצר,
+          המחיר הכולל, אופן ועלות המשלוח ופרטי זכות הביטול. <strong>נקודה שכדאי לנצל:</strong>
+          תקנות הגנת הצרכן (ביטול עסקה) תשע"א־2010 מחריגות במפורש תרופות ותוספי תזונה מזכות ההחזרה
+          הכללית — כלומר אין חובת החזר. לכן מדיניות החזר וולונטרית (אריזה סגורה, 14 יום, החזר מלא)
+          היא <strong>בידול אמיתי</strong> ולא רק עמידה בחוק.
+        </p>
+
+        <h3>אסור לפי מדיניות מטא</h3>
+        <ul>
+          <li><strong>טענות רפואיות</strong>, שפה סנסציונית עם הבטחת תוצאה בטווח זמן, ואמירות שמשפילות את הגוף ("נמאס לך מהגוף שלך", "אתה רזה מדי").</li>
+          <li><strong>חומרים אסורים:</strong> סטרואידים אנבוליים, אפדרה, <span dir="ltr">DHEA</span>, הורמון גדילה.</li>
+          <li><strong>מוצרי עלייה/ירידה במשקל חייבים טירגוט 18+.</strong> חלבון וויטמינים רגילים פטורים.</li>
+          <li><strong>תמונות לפני/אחרי</strong> — מטא הפסיקה לדחות אותן אוטומטית מיולי 2026, אבל הן ייפסלו אם מלוות בהבטחת תוצאה. בשלב הראשון פשוט להימנע מהן לגמרי. זה גם מבטל רעיון של "סדרת טרנספורמציה 12 שבועות" — היא סותרת גם את החוק הישראלי וגם את מדיניות מטא.</li>
+          <li><strong>2–3 דחיות רצופות</strong> של מודעות מובילות בדרך כלל לחסימת החשבון הפרסומי.</li>
+        </ul>
+
+        <h3>סיכונים תפעוליים</h3>
+        <ul>
+          <li><strong>מספר הוואטסאפ הוא נקודת כשל יחידה.</strong> הוא בביו, בכל הפוסטים, וגם ה־CRM. דיוור המוני = הסיבה מספר 1 לחסימה. אם המספר נחסם — העסק מפסיק לתפקד באותו רגע. לכן: ערוץ במקום רשימות תפוצה, וגיבוי רשימת הלקוחות בגיליון מחוץ לפלטפורמה.</li>
+          <li><strong>חשבון האינסטגרם הוא הנכס היחיד.</strong> חשבונות בגודל הזה בישראל הם יעד קבוע לגניבות. 2FA היום.</li>
+          <li><strong>ביט לחשבון פרטי ייחסם בדיוק כשהשיווק יצליח.</strong> תקרה שנתית למי שאינו רשום כעסק. לבדוק כמה נגבה השנה <em>לפני</em> שמשקיעים במדיה.</li>
+          <li><strong>קיבולת שירות.</strong> קמפיין שמייצר 200 שיחות בחודש, ב־10–15 דקות לשיחה, הוא 40–50 שעות מענה. אם זמן התגובה קורס בגלל הצלחת הקמפיין — הקמפיין הרס את המדד שהוא נועד לשפר.</li>
+          <li><strong>מגבלת קריאייטיב תרבותית.</strong> בקהל שמרני, תוכן עם גופים חשופים או נשים מתאמנות עלול להזיק יותר משיועיל. לתכנן את הסרטונים סביב מוצר, אריזה, מדבקת יבואן ודיבור לתוך המצלמה.</li>
+        </ul>
+      </section>
+
+      <!-- ================= closing ================= -->
+      <section class="closing">
+        <h2>אם אפשר לעשות רק שלושה דברים</h2>
+        <p>
+          זו תוכנית לאדם אחד שגם רוכש, גם אורז, גם מוסר וגם מוכר.
+          <strong>סדר העדיפויות הוא חלק מההמלצה, לא קישוט.</strong>
+        </p>
+        <ol class="big">
+          <li><span><strong>לדעת את המרווח</strong> — ולסדר את הרכש והגבייה.</span></li>
+          <li><span><strong>לתקן את החיכוך</strong> — יום עבודה אחד: <span dir="ltr">wa.me</span>, קטלוג, מחירון, גיליון לקוחות, תזכורות חידוש.</span></li>
+          <li><span><strong>שלושה חדרי כושר כנקודות איסוף</strong> — הערוץ היחיד עם עלות משתנה בלבד, שלא תלוי באלגוריתם ולא שורף את המרווח.</span></li>
+        </ol>
+        <p style="margin-top:22px">
+          כל השאר — <span dir="ltr">ManyChat</span>, סידינג, טיקטוק ממומן, מנוי, מועדון, קמפיינים
+          מקבילים — הוא רעש עד ששלושת אלה קיימים ומודדים.
+        </p>
+
+        <div class="foot">
+          <p style="margin:0 0 8px">
+            <strong>על המסמך.</strong> הנתונים על החשבון נלקחו מצילום מסך של הפרופיל (אוגוסט 2026).
+            אינסטגרם חוסמת גישה אוטומטית לפרופילים, ולכן לא ניתן היה לאמת ישירות את תדירות הפרסום,
+            הרכב העוקבים או ביצועי פוסטים בודדים — כל אמירה שנשענת עליהם מסומנת
+            <span class="chip">הערכה</span>.
+          </p>
+          <p style="margin:0">
+            אינני עורך דין ואינני רואה חשבון. הסעיפים המשפטיים נועדו להתריע היכן נדרשת בדיקה,
+            לא להחליף ייעוץ. לפני דיוור המוני, הסדרת מעמד עוסק או שינוי מבנה הגבייה — כדאי ייעוץ קצר.
+          </p>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+</body>
+</html>
