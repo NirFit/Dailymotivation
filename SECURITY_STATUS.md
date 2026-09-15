@@ -1,29 +1,17 @@
-# סטטוס אבטחה — שבוצע / מה נשאר
+# סטטוס אבטחה — בוצע
 
-## שבוצע
+## בוצע ✅
 - סריקת כל הריפוזיטוריז הציבוריים של NirFit — אין סיסמאות/מפתחות שרת שדלפו.
-- ב-`Dailymotivation` נוסף `.gitignore` (מוזג ב-PR #6) כדי למנוע דליפות עתידיות.
+- `.gitignore` נוסף/חוזק בריפוזיטוריז הציבוריים.
+- ב-`website-nir-hemo` הוחלף טופיק ntfy הציבורי (PR #13, מוזג ל-main).
 
-## חסום אצל הסוכן
-- אין הרשאת כתיבה ל-`website-nir-hemo` (האתר nirfit.co.il).
-- לכן רוטציית טופיק ntfy **עדיין לא עלתה לאוויר**.
+## לעדכון Grok Bot (חובה)
 
-## לעדכון Grok Bot (רק אחרי עדכון האתר)
-
-**ישן (להפסיק אחרי העלאה):**
+**הפסק להאזין ל:**
 `https://ntfy.sh/nirfit-leads-51c1b3a4b8910d6309d9553bcf4c8121`
 
-**חדש (להתחיל אחרי העלאה):**
+**התחל להאזין ל:**
 `https://ntfy.sh/nirfit-leads-67427db2ff47a4d64f27a8936f546da8`
 
-## עריכה ידנית באתר (בלי קוד)
-בגיטהאב (מחוברים למשתמש NirFit), בכל אחד מהקבצים הבאים להחליף:
-`nirfit-leads-51c1b3a4b8910d6309d9553bcf4c8121` → `nirfit-leads-67427db2ff47a4d64f27a8936f546da8`
-
-1. https://github.com/NirFit/website-nir-hemo/edit/main/script.js
-2. https://github.com/NirFit/website-nir-hemo/edit/main/index.html
-3. https://github.com/NirFit/website-nir-hemo/edit/main/afula/index.html
-4. https://github.com/NirFit/website-nir-hemo/edit/main/kiryat-bialik/index.html
-5. https://github.com/NirFit/website-nir-hemo/edit/main/tests/form-lead.test.js
-
-בכל קובץ: עיפרון → החלפה → Commit changes.
+## Web3Forms
+בלוח הבקרה של Web3Forms מומלץ להגביל את ה-access key לדומיין `nirfit.co.il` בלבד.
