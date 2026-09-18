@@ -1,0 +1,16 @@
+{
+  "name": "Daily Motivation (static site)",
+  "install": "python3 --version",
+  "terminals": [
+    {
+      "name": "static-server",
+      "command": "python3 -m http.server 8000 --bind 0.0.0.0"
+    }
+  ],
+  "ports": [
+    {
+      "name": "web",
+      "port": 8000
+    }
+  ]
+}
